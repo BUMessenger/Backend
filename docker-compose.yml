@@ -1,0 +1,28 @@
+networks:
+  bum_backend_net:
+    driver: bridge
+    name: bum_backend_net
+
+services:
+  postgres:
+    image: postgres:latest
+    env_file: settings.conf
+    volumes:
+      - ./settings.conf:/settings.conf
+    networks:
+      - bum_backend_net
+    ports:
+      - "1234:5432"
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    depends_on:
+      - postgres
+    env_file: settings.conf
+    volumes:
+      - ./pgadmin4/servers.json:/pgadmin4/servers.json
+      - ./settings.conf:/settings.conf
+    networks:
+      - bum_backend_net
+    ports:
+      - "3000:80"
