@@ -14,7 +14,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BUMessenger.DataAccess.Repo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BUMessenger.Domain", "BUMessenger.Domain", "{E2F13A5C-FFA6-4153-98A4-3BD5C386A4DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BUMeesenger.Domain.Exceptions", "Domain\BUMeesenger.Domain.Exceptions\BUMeesenger.Domain.Exceptions.csproj", "{3D17DBD7-E1CD-4998-AF77-4AA8FB1C95D9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BUMessenger.Domain.Exceptions", "Domain\BUMessenger.Domain.Exceptions\BUMessenger.Domain.Exceptions.csproj", "{3D17DBD7-E1CD-4998-AF77-4AA8FB1C95D9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BUMessenger.Domain.Interfaces", "Domain\BUMessenger.Domain.Interfaces\BUMessenger.Domain.Interfaces.csproj", "{4BC8290B-C56C-48A0-ADA2-14B6AC8901C1}"
 EndProject
