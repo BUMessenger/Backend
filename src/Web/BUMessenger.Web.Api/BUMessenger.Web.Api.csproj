@@ -76,4 +76,8 @@
       <_ContentIncludedByDefault Remove="Views\_ViewStart.cshtml" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="7.3.0" />
+    </ItemGroup>
+
 </Project>
