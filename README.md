@@ -33,4 +33,4 @@ sudo docker-compose up
 ## Запуск
 
 Панель управления базой данных PgAdmin доступна после запуска
-сервера по порту **3000**
+сервера по адресу http://server_address/pgadmin
