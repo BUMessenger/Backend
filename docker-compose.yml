@@ -17,7 +17,7 @@ services:
       dockerfile: ./backend.dockerfile
     depends_on:
       - postgres
-    command: dotnet run --project ./Web/BUMessenger.Web.Api/BUMessenger.Web.Api.csproj
+    command: ./BUMessenger.Web.Api
     networks:
       - bum_backend_net
 
