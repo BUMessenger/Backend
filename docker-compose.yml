@@ -12,6 +12,15 @@ services:
     networks:
       - bum_backend_net
 
+  backend:
+    build:
+      dockerfile: ./backend.dockerfile
+    depends_on:
+      - postgres
+    command: dotnet run --project ./Web/BUMessenger.Web.Api/BUMessenger.Web.Api.csproj
+    networks:
+      - bum_backend_net
+
   pgadmin:
     image: dpage/pgadmin4:9.0
     depends_on:
@@ -27,6 +36,9 @@ services:
 
   nginx:
     image: nginx:1.17.4
+    depends_on:
+      - pgadmin
+      - backend
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     networks:
