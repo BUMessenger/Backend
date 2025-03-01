@@ -1,4 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0
 
-WORKDIR ./bumessenger
-COPY ./src ./
+WORKDIR /build
+COPY ./src .
+RUN dotnet publish --output /app
+WORKDIR /app
+RUN rm -rf ../src
