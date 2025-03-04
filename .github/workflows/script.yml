@@ -8,7 +8,7 @@ jobs:
       
       - name: Building
         run: |
-          docker compose up --exit-code-from backend
+          docker compose -f ./.github/docker-compose.yml --project-directory ./ up --exit-code-from backend
           if [[ 0 == $? ]]
           then
             echo "TESTS_STATUS=success" >> $GITHUB_ENV
