@@ -6,7 +6,7 @@ networks:
 services:
   backend:
     build:
-      context: ..
+      context: .
       dockerfile: ./backend.dockerfile
     networks:
       - bum_backend_net
