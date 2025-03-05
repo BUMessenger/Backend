@@ -15,7 +15,7 @@ public class MessageDb
     /// <summary>
     /// Идентификатор пользователя создавшего сообщение
     /// </summary>
-    public Guid CreatorId { get; set; }
+    public Guid? CreatorId { get; set; }
     
     /// <summary>
     /// Идентификатор родительского сообщений
@@ -40,7 +40,7 @@ public class MessageDb
     /// <summary>
     /// Навигационное свойство для связи с таблицей пользователей
     /// </summary>
-    public UserDb Creator { get; set; }
+    public UserDb? Creator { get; set; }
     
     /// <summary>
     /// Навигационное свойство для связи с родительским сообщением
@@ -59,7 +59,7 @@ public class MessageDb
 
     public MessageDb(Guid id, 
         Guid chatId, 
-        Guid creatorId, 
+        Guid? creatorId, 
         Guid? parentMessageId, 
         DateTime sentAtUtc, 
         string messageText)
