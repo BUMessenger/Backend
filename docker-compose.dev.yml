@@ -7,6 +7,9 @@ services:
   postgres:
     image: postgres:17.4
     env_file: settings.conf
+    environment:
+      POSTGRES_DB: bumessenger
+      POSTGRES_USER: postgres
     volumes:
       - ./settings.conf:/settings.conf
     networks:
