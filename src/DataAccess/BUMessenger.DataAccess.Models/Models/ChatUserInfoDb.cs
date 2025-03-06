@@ -20,27 +20,27 @@ public class ChatUserInfoDb
     /// <summary>
     /// Идентификатор последнего прочитанного сообщения данного пользователя в данном чате
     /// </summary>
-    public Guid LastReadMessageId { get; set; }
+    public Guid? LastReadMessageId { get; set; }
     
     /// <summary>
     /// Навигационное свойство для связи с таблицей чатов
     /// </summary>
-    public ChatDb Chat { get; set; }
+    public ChatDb? Chat { get; set; }
     
     /// <summary>
     /// Навигационное свойство для связи с таблицей пользователей
     /// </summary>
-    public UserDb User { get; set; }
+    public UserDb? User { get; set; }
     
     /// <summary>
     /// Навигационное свойство для связи с таблицей сообщений
     /// </summary>
-    public MessageDb LastReadMessage { get; set; }
+    public MessageDb? LastReadMessage { get; set; }
 
     public ChatUserInfoDb(Guid id, 
         Guid chatId, 
         Guid userId, 
-        Guid lastReadMessageId)
+        Guid? lastReadMessageId)
     {
         Id = id;
         ChatId = chatId;

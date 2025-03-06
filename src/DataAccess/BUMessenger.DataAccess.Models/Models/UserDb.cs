@@ -22,7 +22,7 @@ public class UserDb
     /// <summary>
     /// Отчество пользователя
     /// </summary>
-    public string FatherName { get; set; }
+    public string? FatherName { get; set; }
     
     /// <summary>
     /// Пол пользователя
@@ -42,22 +42,22 @@ public class UserDb
     /// <summary>
     /// Навигационное свойство для связи с таблицей токенов
     /// </summary>
-    public AuthTokenDb AuthToken { get; set; }
-    
+    public AuthTokenDb? AuthToken { get; set; }
+
     /// <summary>
     /// Навигационное свойство для связи с таблицей сообщений
     /// </summary>
-    public List<MessageDb> Messages { get; set; }
-    
+    public List<MessageDb> Messages { get; set; } = [];
+
     /// <summary>
     /// Навигационное свойство для связи с таблицей информации о чатах и пользователях
     /// </summary>
-    public List<ChatUserInfoDb> ChatUserInfos { get; set; }
+    public List<ChatUserInfoDb> ChatUserInfos { get; set; } = [];
 
     public UserDb(Guid id, 
         string name, 
         string surname, 
-        string fatherName, 
+        string? fatherName, 
         GenderDb gender, 
         string email, 
         string passwordHashed)

@@ -13,7 +13,7 @@ public class MessageConfiguration : IEntityTypeConfiguration<MessageDb>
         
         builder.Property(m => m.SentAtUtc).IsRequired();
         
-        builder.Property(m => m.MessageText).IsRequired();
+        builder.Property(m => m.MessageText).IsRequired().HasMaxLength(2000);
         
         builder.HasOne(a => a.Chat)
             .WithMany(c => c.Messages)

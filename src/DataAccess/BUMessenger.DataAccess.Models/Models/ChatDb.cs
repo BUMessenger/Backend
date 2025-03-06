@@ -11,16 +11,16 @@ public class ChatDb
     /// Название чата
     /// </summary>
     public string ChatName { get; set; }
-    
+
     /// <summary>
     /// Навигационное свойство для связи с таблицей сообщений
     /// </summary>
-    public List<MessageDb> Messages { get; set; }
-    
+    public List<MessageDb> Messages { get; set; } = [];
+
     /// <summary>
     /// Навигационное свойство для связи с таблицей информации о чатах и пользователях
     /// </summary>
-    public List<ChatUserInfoDb> ChatUserInfos { get; set; }
+    public List<ChatUserInfoDb> ChatUserInfos { get; set; } = [];
 
     public ChatDb(Guid id, string chatName)
     {

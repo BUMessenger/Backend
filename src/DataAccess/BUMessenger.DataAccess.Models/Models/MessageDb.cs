@@ -46,16 +46,16 @@ public class MessageDb
     /// Навигационное свойство для связи с родительским сообщением
     /// </summary>
     public MessageDb? ParentMessage { get; set; }
-    
+
     /// <summary>
     /// Навигационное свойство для связи с дочерними сообщениями
     /// </summary>
-    public List<MessageDb> ChildMessages { get; set; }
-    
+    public List<MessageDb> ChildMessages { get; set; } = [];
+
     /// <summary>
     /// Навигационное свойство для связи с таблицей информации о чатах и пользователях
     /// </summary>
-    public List<ChatUserInfoDb> ChatUserInfos { get; set; }
+    public List<ChatUserInfoDb> ChatUserInfos { get; set; } = [];
 
     public MessageDb(Guid id, 
         Guid chatId, 

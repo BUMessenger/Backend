@@ -25,7 +25,7 @@ public class AuthTokenDb
     /// <summary>
     /// Навигационное свойство для связи с таблицей пользователей
     /// </summary>
-    public UserDb User { get; set; }
+    public UserDb? User { get; set; }
 
     public AuthTokenDb(Guid id, 
         Guid userId, 
