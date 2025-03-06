@@ -1,4 +1,5 @@
-﻿using BUMessenger.DataAccess.Models.Models;
+﻿using BUMessenger.DataAccess.Context.Configuration;
+using BUMessenger.DataAccess.Models.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BUMessenger.DataAccess.Context;
@@ -23,6 +24,12 @@ public class BUMessengerContext : DbContext
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(BUMessengerContext).Assembly);
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.ApplyConfiguration(new AuthTokenConfiguration());
+        modelBuilder.ApplyConfiguration(new ChatConfiguration());
+        modelBuilder.ApplyConfiguration(new ChatUserInfoConfiguration());
+        modelBuilder.ApplyConfiguration(new MessageConfiguration());
+        modelBuilder.ApplyConfiguration(new UnregisteredUserConfiguration());
+        modelBuilder.ApplyConfiguration(new UserConfiguration());
     }
 }
