@@ -80,4 +80,8 @@
       <PackageReference Include="Swashbuckle.AspNetCore" Version="7.3.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\DataAccess\BUMessenger.DataAccess.Context\BUMessenger.DataAccess.Context.csproj" />
+    </ItemGroup>
+
 </Project>
