@@ -12,9 +12,12 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower));
 });
+
+var connectionString = Environment.GetEnvironmentVariable("DOCKER_CONNECTION_STRING") 
+                       ?? builder.Configuration.GetConnectionString("DefaultConnection");
         
 builder.Services.AddDbContext<BUMessengerContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connectionString));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
