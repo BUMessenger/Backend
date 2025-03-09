@@ -24,6 +24,15 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+var scope = app.Services.CreateScope();
+
+var dbContext = scope.ServiceProvider.GetRequiredService<BUMessengerContext>();
+
+if (!dbContext.Database.CanConnect())
+    Console.WriteLine("Error: Can't connect to database");
+else
+    Console.WriteLine("Connected to database");
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseSwagger();
