@@ -19,9 +19,13 @@ services:
     build:
       context: .
       dockerfile: ./backend.dockerfile
+    env_file: settings.conf
+    environment:
+      DOCKER_CONNECTION_STRING: Host=postgres;Port=5432;Database=bumessenger;Username=postgres;Password=
     depends_on:
       - postgres
-    command: ./BUMessenger.Web.Api
+    command: bash -c "export DOCKER_CONNECTION_STRING=$${DOCKER_CONNECTION_STRING}$${POSTGRES_PASSWORD};
+                      ./BUMessenger.Web.Api"
     networks:
       - bum_backend_net
 
