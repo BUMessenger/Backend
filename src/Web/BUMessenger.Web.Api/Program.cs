@@ -1,6 +1,8 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using BUMessenger.DataAccess.Context;
+using BUMessenger.Web.Api.Extensions;
+using BUMessenger.Web.Api.Middlewares;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,10 +21,31 @@ var connectionString = Environment.GetEnvironmentVariable("DOCKER_CONNECTION_STR
 builder.Services.AddDbContext<BUMessengerContext>(options =>
     options.UseNpgsql(connectionString));
 
+builder.Services.AddExceptionHandlers();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    
+    app.Use(async (context, next) =>
+    {
+        if (context.Request.Path == "/")
+        {
+            context.Response.Redirect("/swagger");
+            return;
+        }
+
+        await next();
+    });
+}
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 var scope = app.Services.CreateScope();
 
@@ -33,13 +56,13 @@ if (!dbContext.Database.CanConnect())
 else
     Console.WriteLine("Connected to database");
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseCors(x => x
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .SetIsOriginAllowed(origin => true)
+    .AllowCredentials());
 
-app.UseHttpsRedirection();
+app.UseRouting();
 
 app.UseAuthorization();
 
