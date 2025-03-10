@@ -32,17 +32,6 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    
-    app.Use(async (context, next) =>
-    {
-        if (context.Request.Path == "/")
-        {
-            context.Response.Redirect("/swagger");
-            return;
-        }
-
-        await next();
-    });
 }
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
@@ -55,12 +44,6 @@ if (!dbContext.Database.CanConnect())
     Console.WriteLine("Error: Can't connect to database");
 else
     Console.WriteLine("Connected to database");
-
-app.UseCors(x => x
-    .AllowAnyMethod()
-    .AllowAnyHeader()
-    .SetIsOriginAllowed(origin => true)
-    .AllowCredentials());
 
 app.UseRouting();
 
