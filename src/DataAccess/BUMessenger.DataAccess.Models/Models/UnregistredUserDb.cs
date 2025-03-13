@@ -13,6 +13,11 @@ public class UnregisteredUserDb
     public string Email { get; set; }
     
     /// <summary>
+    /// Пароль незарегистрированного пользователя в захешированном виде
+    /// </summary>
+    public string PasswordHashed { get; set; }
+    
+    /// <summary>
     /// Код подтверждения электронной почты
     /// </summary>
     public string ApproveCode { get; set; }
@@ -24,11 +29,13 @@ public class UnregisteredUserDb
 
     public UnregisteredUserDb(Guid id, 
         string email, 
+        string passwordHashed,
         string approveCode, 
         DateTime expiresAtUtc)
     {
         Id = id;
         Email = email;
+        PasswordHashed = passwordHashed;
         ApproveCode = approveCode;
         ExpiresAtUtc = expiresAtUtc;
     }

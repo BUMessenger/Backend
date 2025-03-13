@@ -13,6 +13,8 @@ public class UnregisteredUserConfiguration : IEntityTypeConfiguration<Unregister
         
         builder.Property(u => u.Email).IsRequired();
         
+        builder.Property(u => u.PasswordHashed).IsRequired();
+        
         builder.Property(u => u.ApproveCode).IsRequired();
         
         builder.Property(u => u.ExpiresAtUtc).IsRequired();

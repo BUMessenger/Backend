@@ -1,5 +1,3 @@
-using BUMessenger.DataAccess.Models.Enum;
-
 namespace BUMessenger.DataAccess.Models.Models;
 
 public class UserDb
@@ -23,11 +21,6 @@ public class UserDb
     /// Отчество пользователя
     /// </summary>
     public string? FatherName { get; set; }
-    
-    /// <summary>
-    /// Пол пользователя
-    /// </summary>
-    public GenderDb Gender { get; set; }
     
     /// <summary>
     /// Почта пользователя
@@ -58,7 +51,6 @@ public class UserDb
         string name, 
         string surname, 
         string? fatherName, 
-        GenderDb gender, 
         string email, 
         string passwordHashed)
     {
@@ -66,7 +58,6 @@ public class UserDb
         Name = name;
         Surname = surname;
         FatherName = fatherName;
-        Gender = gender;
         Email = email;
         PasswordHashed = passwordHashed;
     }

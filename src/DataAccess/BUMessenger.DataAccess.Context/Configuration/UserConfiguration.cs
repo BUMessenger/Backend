@@ -15,9 +15,7 @@ public class UserConfiguration : IEntityTypeConfiguration<UserDb>
         
         builder.Property(u => u.Surname).IsRequired();
         
-        builder.Property(u => u.FatherName).IsRequired();
-        
-        builder.Property(u => u.Gender).IsRequired();
+        builder.Property(u => u.FatherName);
         
         builder.Property(u => u.Email).IsRequired();
         
