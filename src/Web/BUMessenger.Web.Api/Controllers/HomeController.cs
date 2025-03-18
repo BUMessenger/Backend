@@ -18,6 +18,7 @@ public class HomeController : ControllerBase
     [Produces("application/json")]
     public IActionResult GetItemById(int id)
     {
+        _logger.LogError("Test error");
         throw new Exception();
     }
 }
