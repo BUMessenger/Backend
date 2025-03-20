@@ -16,8 +16,8 @@ public class UnregisteredUserRepository : IUnregisteredUserRepository
     public UnregisteredUserRepository(BUMessengerContext context,
         ILogger<IUnregisteredUserRepository> logger)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context), "Context cannot be null");
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger), "Logger cannot be null");
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
     
     public async Task<UnregisteredUser> AddUnregisteredUserAsync(UnregisteredUserCreateWithAdditionalData unregisteredUser)
