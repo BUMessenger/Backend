@@ -33,6 +33,7 @@ builder.Services.AddDbContext<BUMessengerContext>(options =>
 builder.Services.AddExceptionHandlers();
 
 builder.Services.AddRepositories();
+builder.Services.AddServices();
 
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
