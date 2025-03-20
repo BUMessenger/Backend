@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace BUMessenger.Web.Dto.Models;
+namespace BUMessenger.Web.Dto.Models.UnregisteredUsers;
 
 public class UnregisteredUserDto
 {

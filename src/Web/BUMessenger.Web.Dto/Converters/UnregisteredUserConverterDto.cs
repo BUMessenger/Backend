@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using BUMessenger.Domain.Models.Models.UnregisteredUsers;
 using BUMessenger.Web.Dto.Models;
+using BUMessenger.Web.Dto.Models.UnregisteredUsers;
 
 namespace BUMessenger.Web.Dto.Converters;
 

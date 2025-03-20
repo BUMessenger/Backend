@@ -1,6 +1,7 @@
 using BUMessenger.Domain.Interfaces.Services;
 using BUMessenger.Web.Dto.Converters;
 using BUMessenger.Web.Dto.Models;
+using BUMessenger.Web.Dto.Models.UnregisteredUsers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
