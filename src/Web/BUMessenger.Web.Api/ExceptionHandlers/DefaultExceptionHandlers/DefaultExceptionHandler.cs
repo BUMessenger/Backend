@@ -14,7 +14,7 @@ public class DefaultExceptionHandler : IExceptionHandler
 
         var response = new
         {
-            error = "Произошла внутренняя ошибка сервера.",
+            error = "Произошла внутренняя ошибка сервера." + exception.Message,
             statusCode = StatusCodes.Status500InternalServerError
         };
 
