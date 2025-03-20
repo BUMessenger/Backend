@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using BUMessenger.DataAccess.Context;
+using BUMessenger.Domain.Models.Models;
 using BUMessenger.Web.Api.Extensions;
 using BUMessenger.Web.Api.Middlewares;
 using Microsoft.AspNetCore.Builder;
@@ -32,6 +33,8 @@ builder.Services.AddDbContext<BUMessengerContext>(options =>
 builder.Services.AddExceptionHandlers();
 
 builder.Services.AddRepositories();
+
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
