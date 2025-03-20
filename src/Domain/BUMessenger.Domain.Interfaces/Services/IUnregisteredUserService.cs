@@ -8,6 +8,6 @@ public interface IUnregisteredUserService
     /// Создаёт нового незарегистрированного пользователя
     /// </summary>
     /// <param name="unregisteredUser">Незарегистрированный пользователь для добавления</param>
-    /// <returns>Добавленный незарегистрированный пользователь</returns>
+    /// <returns>Добавленный пользователь</returns>
     Task<UnregisteredUser> AddUnregisteredUserAsync(UnregisteredUserCreate unregisteredUser);
 }

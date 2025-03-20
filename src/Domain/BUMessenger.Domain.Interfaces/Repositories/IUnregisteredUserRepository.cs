@@ -24,4 +24,11 @@ public interface IUnregisteredUserRepository
     /// <param name="email">Почта незарегистрированного пользователя</param>
     /// <returns>Флаг существования</returns>
     Task<bool> IsUnregisteredUserExistByEmailAsync(string email);
+    
+    /// <summary>
+    /// Получение незарегистрированного пользователя по email
+    /// </summary>
+    /// <param name="email">Почта незарегистрированного пользователя</param>
+    /// <returns>Незарегистрированный пользователь</returns>
+    Task<string?> FindUnregisteredUserPasswordByEmailAsync(string email);
 }

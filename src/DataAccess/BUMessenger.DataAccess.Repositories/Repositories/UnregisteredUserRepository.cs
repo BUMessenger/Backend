@@ -74,4 +74,23 @@ public class UnregisteredUserRepository : IUnregisteredUserRepository
             throw new UnregisteredUserRepositoryException($"Failed to find user with email {email}", e);
         }
     }
+
+    public async Task<string?> FindUnregisteredUserPasswordByEmailAsync(string email)
+    {
+        try
+        {
+            var passwordHashed = await _context.UnregisteredUsers
+                .Where(u => u.Email == email)
+                .AsNoTracking()
+                .Select(u => u.PasswordHashed)
+                .FirstOrDefaultAsync();
+            
+            return passwordHashed;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Failed to find user with email {@Email}", email);
+            throw new UnregisteredUserRepositoryException($"Failed to find user with email {email}", e);
+        }
+    }
 }
