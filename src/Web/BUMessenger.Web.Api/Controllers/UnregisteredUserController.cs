@@ -23,7 +23,7 @@ public class UnregisteredUserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> CreateUnregisteredUser([FromBody] UnregisteredUserCreateDto unregisteredUserCreateDto)
+    public async Task<IActionResult> CreateUnregisteredUserAsync([FromBody] UnregisteredUserCreateDto unregisteredUserCreateDto)
     {
         var unregisteredUserCreateDomain = unregisteredUserCreateDto.ToDomain();
         
