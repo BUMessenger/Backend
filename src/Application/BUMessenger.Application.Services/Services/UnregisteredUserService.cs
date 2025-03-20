@@ -13,11 +13,11 @@ public class UnregisteredUserService : IUnregisteredUserService
 {
     private readonly IUnregisteredUserRepository _unregisteredUserRepository;
     private readonly IEmailService _emailService;
-    private readonly ILogger<UnregisteredUserService> _logger;
+    private readonly ILogger<IUnregisteredUserService> _logger;
 
     public UnregisteredUserService(IUnregisteredUserRepository unregisteredUserRepository,
         IEmailService emailService,
-        ILogger<UnregisteredUserService> logger)
+        ILogger<IUnregisteredUserService> logger)
     {
         _unregisteredUserRepository = unregisteredUserRepository ?? throw new ArgumentNullException(nameof(unregisteredUserRepository));
         _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));

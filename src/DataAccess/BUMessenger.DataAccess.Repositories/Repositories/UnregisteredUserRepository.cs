@@ -11,10 +11,10 @@ namespace BUMessenger.DataAccess.Repositories.Repositories;
 public class UnregisteredUserRepository : IUnregisteredUserRepository
 {
     private readonly BUMessengerContext _context;
-    private readonly ILogger<UnregisteredUserRepository> _logger;
+    private readonly ILogger<IUnregisteredUserRepository> _logger;
 
     public UnregisteredUserRepository(BUMessengerContext context,
-        ILogger<UnregisteredUserRepository> logger)
+        ILogger<IUnregisteredUserRepository> logger)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context), "Context cannot be null");
         _logger = logger ?? throw new ArgumentNullException(nameof(logger), "Logger cannot be null");
