@@ -92,6 +92,7 @@
       <ProjectReference Include="..\..\DataAccess\BUMessenger.DataAccess.Context\BUMessenger.DataAccess.Context.csproj" />
       <ProjectReference Include="..\..\DataAccess\BUMessenger.DataAccess.Repositories\BUMessenger.DataAccess.Repositories.csproj" />
       <ProjectReference Include="..\..\Domain\BUMessenger.Domain.Interfaces\BUMessenger.Domain.Interfaces.csproj" />
+      <ProjectReference Include="..\BUMessenger.Web.Dto\BUMessenger.Web.Dto.csproj" />
     </ItemGroup>
 
 </Project>
