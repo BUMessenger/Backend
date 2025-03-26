@@ -38,22 +38,21 @@ public class UnregisteredUserRepository : IUnregisteredUserRepository
         }
     }
 
-    public async Task<string?> FindUnregisteredUserApproveCodeByEmailAsync(string email)
+    public async Task<UnregisteredUserForAddUser?> FindUnregisteredUserByEmailAsync(string email)
     {
         try
         {
-            var approveCode = await _context.UnregisteredUsers
+            var unregisteredUserDb = await _context.UnregisteredUsers
                 .Where(u => u.Email == email)
                 .AsNoTracking()
-                .Select(u => u.ApproveCode)
                 .FirstOrDefaultAsync();
-            
-            return approveCode;
+
+            return unregisteredUserDb.ToDomainForAddUser();
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to find approve code for user with email {@Email}", email);
-            throw new UnregisteredUserRepositoryException($"Failed to find approve code for user with email {email}", e);
+            _logger.LogError("Failed to find unregistered user with email {@Email}", email);
+            throw new UnregisteredUserRepositoryException($"Failed to find unregistered user with email {email}", e);
         }
     }
 
@@ -70,27 +69,25 @@ public class UnregisteredUserRepository : IUnregisteredUserRepository
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to find user with email {@Email}", email);
-            throw new UnregisteredUserRepositoryException($"Failed to find user with email {email}", e);
+            _logger.LogError("Failed to find unregistered user with email {@Email}", email);
+            throw new UnregisteredUserRepositoryException($"Failed to find unregistered user with email {email}", e);
         }
     }
 
-    public async Task<string?> FindUnregisteredUserPasswordByEmailAsync(string email)
+    public async Task DeleteUnregisteredUserByEmailAsync(string email)
     {
         try
         {
-            var passwordHashed = await _context.UnregisteredUsers
+            await _context.UnregisteredUsers
                 .Where(u => u.Email == email)
-                .AsNoTracking()
-                .Select(u => u.PasswordHashed)
-                .FirstOrDefaultAsync();
+                .ExecuteDeleteAsync();
             
-            return passwordHashed;
+            await _context.SaveChangesAsync();
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to find user with email {@Email}", email);
-            throw new UnregisteredUserRepositoryException($"Failed to find user with email {email}", e);
+            _logger.LogError("Failed to delete unregistered user with email {@Email}", email);
+            throw new UnregisteredUserRepositoryException($"Failed to delete unregistered user with email {email}", e);
         }
     }
 }

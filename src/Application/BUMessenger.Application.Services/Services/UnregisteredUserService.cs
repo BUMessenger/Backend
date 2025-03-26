@@ -1,5 +1,6 @@
 using BUMeesenger.Domain.Exceptions.Services.EmailServiceExceptions;
 using BUMeesenger.Domain.Exceptions.Services.UnregisteredUserExceptions;
+using BUMeesenger.Domain.Exceptions.Services.UserServiceExceptions;
 using BUMessenger.Application.Services.Helpers;
 using BUMessenger.Domain.Interfaces.Repositories;
 using BUMessenger.Domain.Interfaces.Services;
@@ -13,14 +14,17 @@ public class UnregisteredUserService : IUnregisteredUserService
 {
     private readonly IUnregisteredUserRepository _unregisteredUserRepository;
     private readonly IEmailService _emailService;
+    private readonly IUserRepository _userRepository;
     private readonly ILogger<IUnregisteredUserService> _logger;
 
     public UnregisteredUserService(IUnregisteredUserRepository unregisteredUserRepository,
         IEmailService emailService,
+        IUserRepository userRepository,
         ILogger<IUnregisteredUserService> logger)
     {
         _unregisteredUserRepository = unregisteredUserRepository ?? throw new ArgumentNullException(nameof(unregisteredUserRepository));
         _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
+        _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -29,6 +33,7 @@ public class UnregisteredUserService : IUnregisteredUserService
         try
         {
             await ThrowIfUnregisteredUserWithSameEmailExists(unregisteredUser.Email);
+            await ThrowIfUserWithSameEmailExists(unregisteredUser.Email);
             
             var passwordHashed = HashHelper.ComputeMD5Hash(unregisteredUser.Password);
 
@@ -46,7 +51,8 @@ public class UnregisteredUserService : IUnregisteredUserService
         }
         catch (Exception e) when (e is UnregisteredUserAlreadyExistsServiceException
                                   or ReceiverDoesntExistEmailServiceException
-                                  or EmailServiceException)
+                                  or EmailServiceException
+                                  or UserAlreadyExistsServiceException)
         {
             throw;
         }
@@ -73,6 +79,16 @@ public class UnregisteredUserService : IUnregisteredUserService
             _logger.LogInformation("Unregistered user with email {Email} already exists.", email);
             throw new UnregisteredUserAlreadyExistsServiceException(
                 $"Unregistered user with email {email} already exists.");
+        }
+    }
+    
+    private async Task ThrowIfUserWithSameEmailExists(string email)
+    {
+        if (await _userRepository.IsUserExistByEmailAsync(email))
+        {
+            _logger.LogInformation("User with email {Email} already exists.", email);
+            throw new UserAlreadyExistsServiceException(
+                $"User with email {email} already exists.");
         }
     }
 }

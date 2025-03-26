@@ -32,4 +32,20 @@ public static class UnregisteredUserConverterDb
             Email = unregisteredUserDb.Email
         };
     }
+
+    [return: NotNullIfNotNull(nameof(unregisteredUserDb))]
+    public static UnregisteredUserForAddUser? ToDomainForAddUser(this UnregisteredUserDb? unregisteredUserDb)
+    {
+        if (unregisteredUserDb is null)
+            return null;
+
+        return new UnregisteredUserForAddUser
+        {
+            Id = unregisteredUserDb.Id,
+            Email = unregisteredUserDb.Email,
+            PasswordHashed = unregisteredUserDb.PasswordHashed,
+            ApproveCode = unregisteredUserDb.ApproveCode,
+            ExpiresAtUtc = unregisteredUserDb.ExpiresAtUtc
+        };
+    }
 }

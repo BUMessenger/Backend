@@ -2,22 +2,22 @@ using BUMeesenger.Domain.Exceptions.Services.UserServiceExceptions;
 
 namespace BUMessenger.Web.Api.ExceptionHandlers.UserExceptionHandlers;
 
-public class WrongApproveCodeUserServiceExceptionHandler : IExceptionHandler
+public class UserAlreadyExistsServiceExceptionHandler : IExceptionHandler
 {
     public bool CanHandle(Exception exception)
     {
-        return exception is WrongApproveCodeUserServiceException;
+        return exception is UserAlreadyExistsServiceException;
     }
     
     public Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
-        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+        context.Response.StatusCode = StatusCodes.Status409Conflict;
         context.Response.ContentType = "application/json";
 
         var response = new
         {
-            error = "Введён неправильный или просроченный код подтверждения.",
-            statusCode = StatusCodes.Status403Forbidden
+            error = "Пользователь с такой электронной почтой уже существует.",
+            statusCode = StatusCodes.Status409Conflict
         };
 
         return context.Response.WriteAsJsonAsync(response);

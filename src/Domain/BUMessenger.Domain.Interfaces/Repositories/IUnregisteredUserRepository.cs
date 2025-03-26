@@ -12,13 +12,6 @@ public interface IUnregisteredUserRepository
     Task<UnregisteredUser> AddUnregisteredUserAsync(UnregisteredUserCreateWithAdditionalData unregisteredUser);
     
     /// <summary>
-    /// Возвращает код подтверждения незарегистрированного пользователя по email
-    /// </summary>
-    /// <param name="email">Почта незарегистрированного пользователя</param>
-    /// <returns>Код подтверждения</returns>
-    Task<string?> FindUnregisteredUserApproveCodeByEmailAsync(string email);
-    
-    /// <summary>
     /// True -- если незарегистрированный пользователь с таким email существует, false -- иначе
     /// </summary>
     /// <param name="email">Почта незарегистрированного пользователя</param>
@@ -26,9 +19,16 @@ public interface IUnregisteredUserRepository
     Task<bool> IsUnregisteredUserExistByEmailAsync(string email);
     
     /// <summary>
+    /// Удаление незарегистрированного пользователя по email
+    /// </summary>
+    /// <param name="email">Почта незарегистрированного пользователя</param>
+    /// <returns></returns>
+    Task DeleteUnregisteredUserByEmailAsync(string email);
+    
+    /// <summary>
     /// Получение незарегистрированного пользователя по email
     /// </summary>
     /// <param name="email">Почта незарегистрированного пользователя</param>
     /// <returns>Незарегистрированный пользователь</returns>
-    Task<string?> FindUnregisteredUserPasswordByEmailAsync(string email);
+    Task<UnregisteredUserForAddUser?> FindUnregisteredUserByEmailAsync(string email);
 }

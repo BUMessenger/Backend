@@ -27,27 +27,31 @@ public class UserService : IUserService
     {
         try
         {
-            var actualApproveCode =
-                await _unregisteredUserRepository.FindUnregisteredUserApproveCodeByEmailAsync(userCreate.Email);
-            if (actualApproveCode is null)
+            var unregisteredUser =
+                await _unregisteredUserRepository.FindUnregisteredUserByEmailAsync(userCreate.Email);
+            if (unregisteredUser is null)
             {
                 _logger.LogInformation("Unregistered user with email = {Email} not found.", userCreate.Email);
                 throw new UnregisteredUserNotFoundServiceException(
                     $"Unregistered user with email = {userCreate.Email} not found.");
             }
 
-            if (actualApproveCode != userCreate.ApproveCode)
+            if (unregisteredUser.ApproveCode != userCreate.ApproveCode ||
+                unregisteredUser.ExpiresAtUtc < DateTime.UtcNow)
             {
-                _logger.LogInformation("Wrong approve code = {ApproveCode}.", userCreate.ApproveCode);
-                throw new WrongApproveCodeUserServiceException($"Wrong approve code = {userCreate.ApproveCode}.");
+                _logger.LogInformation("Wrong or expired approve code = {ApproveCode}.", userCreate.ApproveCode);
+                throw new WrongApproveCodeUserServiceException($"Wrong or expired approve code = {userCreate.ApproveCode}.");
             }
 
-            var passwordHashed =
-                await _unregisteredUserRepository.FindUnregisteredUserPasswordByEmailAsync(userCreate.Email);
+            var passwordHashed = unregisteredUser.PasswordHashed;
 
             var userCreateWithPassword = userCreate.ToUserCreateWithPassword(passwordHashed!);
 
-            return await _userRepository.AddUserAsync(userCreateWithPassword);
+            var addedUser = await _userRepository.AddUserAsync(userCreateWithPassword);
+            
+            await _unregisteredUserRepository.DeleteUnregisteredUserByEmailAsync(userCreate.Email);
+            
+            return addedUser;
         }
         catch (Exception e) when (e is UnregisteredUserNotFoundServiceException
                                       or WrongApproveCodeUserServiceException)

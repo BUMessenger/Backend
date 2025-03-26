@@ -3,6 +3,7 @@ using BUMessenger.DataAccess.Context;
 using BUMessenger.DataAccess.Models.Converters;
 using BUMessenger.Domain.Interfaces.Repositories;
 using BUMessenger.Domain.Models.Models.Users;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace BUMessenger.DataAccess.Repositories.Repositories;
@@ -33,6 +34,24 @@ public class UserRepository : IUserRepository
         {
             _logger.LogError("Failed to add user {UserCreate}.", userCreate);
             throw new UserRepositoryException($"Failed to add user {userCreate}.", e);
+        }
+    }
+
+    public async Task<bool> IsUserExistByEmailAsync(string email)
+    {
+        try
+        {
+            var usersCount = await _context.Users
+                .Where(u => u.Email == email)
+                .AsNoTracking()
+                .CountAsync();
+
+            return usersCount > 0;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Failed to find users with email {@Email}", email);
+            throw new UserRepositoryException($"Failed to find users with email {email}", e);
         }
     }
 }
