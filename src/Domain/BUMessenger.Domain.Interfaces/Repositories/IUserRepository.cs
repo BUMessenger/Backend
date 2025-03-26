@@ -17,4 +17,19 @@ public interface IUserRepository
     /// <param name="email">Email пользователя</param>
     /// <returns>Флаг существования пользователя</returns>
     Task<bool> IsUserExistByEmailAsync(string email);
+    
+    /// <summary>
+    /// Получение пользователя по email и захешированному паролю
+    /// </summary>
+    /// <param name="email">Email</param>
+    /// <param name="passwordHashed">Захешированный пароль</param>
+    /// <returns>Пользователь, если найден, null -- иначе</returns>
+    Task<User?> FindUserByEmailPasswordHashedAsync(string email, string passwordHashed);
+    
+    /// <summary>
+    /// Получение пользователя по идентификатору
+    /// </summary>
+    /// <param name="id">Идентификатор</param>
+    /// <returns>Пользователь, если найден, null -- иначе</returns>
+    Task<User?> FindUserByIdAsync(Guid id);
 }

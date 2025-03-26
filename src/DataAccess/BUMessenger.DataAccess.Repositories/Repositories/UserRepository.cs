@@ -54,4 +54,38 @@ public class UserRepository : IUserRepository
             throw new UserRepositoryException($"Failed to find users with email {email}", e);
         }
     }
+
+    public async Task<User?> FindUserByEmailPasswordHashedAsync(string email, string passwordHashed)
+    {
+        try
+        {
+            var userDb = await _context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Email == email && u.PasswordHashed == passwordHashed);
+
+            return userDb.ToDomain();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Failed to find user with email {@Email}", email);
+            throw new UserRepositoryException($"Failed to find user with email {email}", e);
+        }
+    }
+
+    public async Task<User?> FindUserByIdAsync(Guid id)
+    {
+        try
+        {
+            var userDb = await _context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == id);
+
+            return userDb.ToDomain();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Failed to find user with id {@Id}", id);
+            throw new UserRepositoryException($"Failed to find user with id {id}", e);
+        }
+    }
 }

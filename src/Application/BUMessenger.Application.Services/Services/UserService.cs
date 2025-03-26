@@ -1,5 +1,6 @@
 using BUMeesenger.Domain.Exceptions.Services.UnregisteredUserExceptions;
 using BUMeesenger.Domain.Exceptions.Services.UserServiceExceptions;
+using BUMessenger.Application.Services.Helpers;
 using BUMessenger.Domain.Interfaces.Repositories;
 using BUMessenger.Domain.Interfaces.Services;
 using BUMessenger.Domain.Models.Models.Converters;
@@ -62,6 +63,52 @@ public class UserService : IUserService
         {
             _logger.LogError("Failed to add user {UserCreate}.", userCreate);
             throw new UserServiceException($"Failed to add user {userCreate}.", e);
+        }
+    }
+
+    public async Task<User> GetUserByEmailPasswordAsync(string email, string password)
+    {
+        try
+        {
+            var passwordHashed = HashHelper.ComputeMD5Hash(password);
+
+            var user = await _userRepository.FindUserByEmailPasswordHashedAsync(email, passwordHashed);
+            if (user is null)
+            {
+                _logger.LogInformation("User with email = {Email} wasn't found.", email);
+                throw new UserNotFoundServiceException($"User with email = {email} wasn't found.");
+            }
+            
+            return user;
+        }
+        catch (Exception e) when (e is UserNotFoundServiceException)
+        {
+            throw;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Failed to find user with email {@Email}", email);
+            throw new UserServiceException($"Failed to find user with email {email}", e);
+        }
+    }
+
+    public async Task<User> GetUserByIdAsync(Guid id)
+    {
+        try
+        {
+            var user = await _userRepository.FindUserByIdAsync(id);
+            if (user is null)
+            {
+                _logger.LogInformation("User with id = {Id} wasn't found.", id);
+                throw new UserNotFoundServiceException($"User with id = {id} wasn't found.");
+            }
+            
+            return user;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Failed to find user with id {@Id}", id);
+            throw new UserServiceException($"Failed to find user with id {id}", e);
         }
     }
 }
