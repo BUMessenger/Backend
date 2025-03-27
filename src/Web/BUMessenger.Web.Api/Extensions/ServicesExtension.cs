@@ -10,6 +10,7 @@ public static class ServicesExtension
         services.AddTransient<IUnregisteredUserService, UnregisteredUserService>();
         services.AddTransient<IEmailService, EmailService>();
         services.AddTransient<IUserService, UserService>();
+        services.AddTransient<IAuthTokenService, AuthTokenService>();
 
         return services;
     }
