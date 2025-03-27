@@ -66,4 +66,19 @@ public class AuthController : ControllerBase
         
         return StatusCode(StatusCodes.Status200OK, tokens);
     }
+
+    [HttpPost("logout")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> LogoutAsync()
+    {
+        var refreshToken = Request.Headers["Refresh-Token"].ToString();
+        
+        await _authTokenService.RevokeRefreshTokenByRefreshTokenAsync(refreshToken);
+        
+        return StatusCode(StatusCodes.Status200OK);
+    }
 }
