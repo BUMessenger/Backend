@@ -69,10 +69,32 @@ public class AuthTokenRepository : IAuthTokenRepository
                 throw new AuthTokenNotFoundRepositoryException($"Auth token with value {refreshToken} not found.");
             }
         }
+        catch (AuthTokenNotFoundRepositoryException e)
+        {
+            throw;
+        }
         catch (Exception e)
         {
             _logger.LogError("Failed to delete refresh token with value {RefreshToken}.", refreshToken);
             throw new AuthTokenRepositoryException($"Failed to delete refresh token with value {refreshToken}.", e);
+        }
+    }
+
+    public async Task<AuthToken?> FindAuthTokenByIdAsync(Guid id)
+    {
+        try
+        {
+            var authTokenDb = await _context.AuthTokens
+                .Where(a => a.Id == id)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
+            return authTokenDb.ToDomain();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Failed to find refresh token with id {Id}.", id);
+            throw new AuthTokenRepositoryException($"Failed to find refresh token with id {id}.", e);
         }
     }
 }

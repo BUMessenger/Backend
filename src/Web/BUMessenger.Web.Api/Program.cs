@@ -93,13 +93,18 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+app.UseRouting();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+app.UseAuthentication();
+
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseMiddleware<RefreshTokenMiddleware>();
 
 var scope = app.Services.CreateScope();
 
@@ -110,10 +115,11 @@ if (!dbContext.Database.CanConnect())
 else
     Console.WriteLine("Connected to database");
 
-app.UseRouting();
-
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 
 app.Run();

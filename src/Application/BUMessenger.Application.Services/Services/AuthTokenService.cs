@@ -78,4 +78,19 @@ public class AuthTokenService : IAuthTokenService
             throw new AuthTokenServiceException($"Failed to revoke refresh token with value {refreshToken}.", e);
         }
     }
+
+    public async Task<bool> IsRefreshTokenValidByIdAsync(Guid id)
+    {
+        try
+        {
+            var token = await _authTokenRepository.FindAuthTokenByIdAsync(id);
+            
+            return token is not null && token.ExpiresAtUtc > DateTime.UtcNow;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Failed to valid refresh token with id {Id}.", id);
+            throw new AuthTokenServiceException($"Failed to valid refresh token with id {id}.", e);
+        }
+    }
 }

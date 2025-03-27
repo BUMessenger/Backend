@@ -10,15 +10,9 @@ namespace BUMessenger.Web.Api.Authentification;
 
 public static class AuthTokensGenerator
 {
-    public static AuthResponseDto GenerateTokensAsync(User user, JwtSettings jwtSettings)
-    {
-        var accessToken = GenerateJwtToken(user, jwtSettings);
-        var refreshToken = GenerateRefreshToken();
-        
-        return new AuthResponseDto(accessToken, refreshToken);
-    }
-    
-    private static string GenerateJwtToken(User user, JwtSettings jwtSettings)
+    public static string GenerateJwtToken(User user, 
+        JwtSettings jwtSettings,
+        Guid refreshTokenId)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -27,7 +21,8 @@ public static class AuthTokensGenerator
         {
             new Claim(ClaimTypes.Name, user.Name),
             new Claim(ClaimTypes.Surname, user.Surname),
-            new Claim(ClaimTypes.Email, user.Email)
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim("RefreshTokenId", refreshTokenId.ToString())
         };
 
         var token = new JwtSecurityToken(
@@ -38,10 +33,10 @@ public static class AuthTokensGenerator
             signingCredentials: credentials
         );
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        return "Bearer " + new JwtSecurityTokenHandler().WriteToken(token);
     }
     
-    private static string GenerateRefreshToken()
+    public static string GenerateRefreshToken()
     {
         return Guid.NewGuid().ToString();
     }

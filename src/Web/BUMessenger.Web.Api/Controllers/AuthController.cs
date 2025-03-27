@@ -36,15 +36,17 @@ public class AuthController : ControllerBase
     {
         var user = await _userService.AuthUserByEmailPasswordAsync(loginUserDto.Email, loginUserDto.Password);
         
-        var tokens = AuthTokensGenerator.GenerateTokensAsync(user, _jwtSettings);
+        var refreshTokenValue = AuthTokensGenerator.GenerateRefreshToken();
         var refreshTokenCreate = new AuthTokenCreate
         {
             UserId = user.Id,
-            RefreshToken = tokens.RefreshToken,
+            RefreshToken = refreshTokenValue,
             ExpiresAtUtc = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpiryDays)
         };
+        var addedRefreshToken = await _authTokenService.AddAuthTokenAsync(refreshTokenCreate);
         
-        await _authTokenService.AddAuthTokenAsync(refreshTokenCreate);
+        var tokens = new AuthResponseDto(AuthTokensGenerator.GenerateJwtToken(user, _jwtSettings, addedRefreshToken.Id),
+            addedRefreshToken.RefreshToken);
 
         return StatusCode(StatusCodes.Status200OK, tokens);
     }
@@ -61,8 +63,9 @@ public class AuthController : ControllerBase
         
         var user = await _userService.GetUserByIdAsync(refreshToken.UserId);
         
-        var tokens = AuthTokensGenerator.GenerateTokensAsync(user, _jwtSettings);
-        tokens.RefreshToken = refreshToken.RefreshToken;
+        var authToken = AuthTokensGenerator.GenerateJwtToken(user, _jwtSettings, refreshToken.Id);
+        
+        var tokens = new AuthResponseDto(authToken, refreshToken.RefreshToken);
         
         return StatusCode(StatusCodes.Status200OK, tokens);
     }
@@ -71,11 +74,12 @@ public class AuthController : ControllerBase
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> LogoutAsync()
+    public async Task<IActionResult> LogoutAsync([FromBody] RefreshTokenDto refreshTokenDto)
     {
-        var refreshToken = Request.Headers["Refresh-Token"].ToString();
+        var refreshToken = refreshTokenDto.RefreshToken;
         
         await _authTokenService.RevokeRefreshTokenByRefreshTokenAsync(refreshToken);
         
