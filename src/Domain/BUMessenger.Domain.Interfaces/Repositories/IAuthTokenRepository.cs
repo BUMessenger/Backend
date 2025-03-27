@@ -17,4 +17,11 @@ public interface IAuthTokenRepository
     /// <param name="refreshToken">Значение токена</param>
     /// <returns>Токен, если найден, null -- иначе</returns>
     Task<AuthToken?> FindAuthTokenByRefreshTokenAsync(string refreshToken);
+    
+    /// <summary>
+    /// Удаляет из базы токен по его значению
+    /// </summary>
+    /// <param name="refreshToken">Значение токена</param>
+    /// <returns></returns>
+    Task DeleteAuthTokenByRefreshTokenAsync(string refreshToken);
 }

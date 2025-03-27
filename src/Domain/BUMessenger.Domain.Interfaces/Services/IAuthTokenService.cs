@@ -17,4 +17,11 @@ public interface IAuthTokenService
     /// <param name="refreshToken">Значение токена</param>
     /// <returns>Токен</returns>
     Task<AuthToken> GetAuthTokenByRefreshTokenAsync(string refreshToken);
+    
+    /// <summary>
+    /// Отзывает токен по его значению
+    /// </summary>
+    /// <param name="refreshToken">Значение токена</param>
+    /// <returns></returns>
+    Task RevokeRefreshTokenByRefreshTokenAsync(string refreshToken);
 }

@@ -20,6 +20,7 @@ public static class ExceptionHandlingExtension
         services.AddSingleton<IExceptionHandler, UserNotFoundServiceExceptionHandler>();
         services.AddSingleton<IExceptionHandler, UserAlreadyExistsServiceExceptionHandler>();
         services.AddSingleton<IExceptionHandler, AuthTokenNotFoundServiceExceptionHandler>();
+        services.AddSingleton<IExceptionHandler, AuthTokenNullOrEmptyServiceExceptionHandler>();
         services.AddSingleton<IExceptionHandler, DefaultExceptionHandler>();
 
         return services;

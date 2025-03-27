@@ -1,3 +1,4 @@
+using BUMeesenger.Domain.Exceptions.Repositories.AuthTokenExceptions;
 using BUMeesenger.Domain.Exceptions.Services.AuthTokenExceptions;
 using BUMessenger.Domain.Interfaces.Repositories;
 using BUMessenger.Domain.Interfaces.Services;
@@ -51,6 +52,30 @@ public class AuthTokenService : IAuthTokenService
         {
             _logger.LogError("Failed to find refresh token with value {RefreshToken}.", refreshToken);
             throw new AuthTokenServiceException($"Failed to find refresh token with value {refreshToken}.", e);
+        }
+    }
+
+    public async Task RevokeRefreshTokenByRefreshTokenAsync(string refreshToken)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                _logger.LogInformation("Null or empty refresh token {RefreshToken}.", refreshToken);
+                throw new AuthTokenNullOrEmptyServiceException($"Null or empty refresh token {refreshToken}.");
+            }
+            
+            await _authTokenRepository.DeleteAuthTokenByRefreshTokenAsync(refreshToken);
+        }
+        catch (AuthTokenNotFoundRepositoryException e)
+        {
+            _logger.LogInformation("Auth token with value {RefreshToken} not found.", refreshToken);
+            throw new AuthTokenNotFoundServiceException($"Auth token with value {refreshToken} not found.", e);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Failed to revoke refresh token with value {RefreshToken}.", refreshToken);
+            throw new AuthTokenServiceException($"Failed to revoke refresh token with value {refreshToken}.", e);
         }
     }
 }
