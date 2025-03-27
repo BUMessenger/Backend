@@ -17,7 +17,7 @@ public interface IUserService
     /// <param name="email">Адрес почты</param>
     /// <param name="password">Пароль</param>
     /// <returns>Пользователь</returns>
-    Task<User> GetUserByEmailPasswordAsync(string email, string password);
+    Task<User> AuthUserByEmailPasswordAsync(string email, string password);
     
     /// <summary>
     /// Получение пользователя по идентификатору

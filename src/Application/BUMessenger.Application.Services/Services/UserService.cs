@@ -66,17 +66,23 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<User> GetUserByEmailPasswordAsync(string email, string password)
+    public async Task<User> AuthUserByEmailPasswordAsync(string email, string password)
     {
         try
         {
+            if (!await _userRepository.IsUserExistByEmailAsync(email))
+            {
+                _logger.LogInformation("User with email = {Email} wasn't found.", email);
+                throw new UserNotFoundServiceException($"User with email = {email} wasn't found.");
+            }
+            
             var passwordHashed = HashHelper.ComputeMD5Hash(password);
 
             var user = await _userRepository.FindUserByEmailPasswordHashedAsync(email, passwordHashed);
             if (user is null)
             {
-                _logger.LogInformation("User with email = {Email} wasn't found.", email);
-                throw new UserNotFoundServiceException($"User with email = {email} wasn't found.");
+                _logger.LogInformation("Wrong password for user with email = {Email}.", email);
+                throw new UserWrongPasswordServiceException($"Wrong password for user with email = {email}.");
             }
             
             return user;
