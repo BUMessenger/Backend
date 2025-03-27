@@ -9,6 +9,7 @@ public static class RepositoriesExtension
     {
         services.AddTransient<IUnregisteredUserRepository, UnregisteredUserRepository>();
         services.AddTransient<IUserRepository, UserRepository>();
+        services.AddTransient<IAuthTokenRepository, AuthTokenRepository>();
 
         return services;
     }
