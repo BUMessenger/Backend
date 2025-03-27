@@ -52,4 +52,4 @@ services:
     networks:
       - bum_backend_net
     ports:
-      - 1234:80
+      - 5674:80
