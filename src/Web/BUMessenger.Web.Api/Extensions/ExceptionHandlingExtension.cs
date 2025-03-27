@@ -18,7 +18,7 @@ public static class ExceptionHandlingExtension
         services.AddSingleton<IExceptionHandler, WrongApproveCodeUserServiceExceptionHandler>();
         services.AddSingleton<IExceptionHandler, UserAlreadyExistsServiceExceptionHandler>();
         services.AddSingleton<IExceptionHandler, UserNotFoundServiceExceptionHandler>();
-        services.AddSingleton<IExceptionHandler, UserAlreadyExistsServiceExceptionHandler>();
+        services.AddSingleton<IExceptionHandler, UserWrongPasswordServiceExceptionHandler>();
         services.AddSingleton<IExceptionHandler, AuthTokenNotFoundServiceExceptionHandler>();
         services.AddSingleton<IExceptionHandler, AuthTokenNullOrEmptyServiceExceptionHandler>();
         services.AddSingleton<IExceptionHandler, DefaultExceptionHandler>();

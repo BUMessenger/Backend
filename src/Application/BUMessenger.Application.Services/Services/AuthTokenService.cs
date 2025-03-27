@@ -36,7 +36,7 @@ public class AuthTokenService : IAuthTokenService
         try
         {
             var authToken = await _authTokenRepository.FindAuthTokenByRefreshTokenAsync(refreshToken);
-            if (authToken is null || authToken.ExpiresAtUtc > DateTime.UtcNow)
+            if (authToken is null || authToken.ExpiresAtUtc < DateTime.UtcNow)
             {
                 _logger.LogInformation("Refresh token {RefreshToken} not found.", refreshToken);
                 throw new AuthTokenNotFoundServiceException($"Refresh token {refreshToken} not found.");
@@ -64,8 +64,12 @@ public class AuthTokenService : IAuthTokenService
                 _logger.LogInformation("Null or empty refresh token {RefreshToken}.", refreshToken);
                 throw new AuthTokenNullOrEmptyServiceException($"Null or empty refresh token {refreshToken}.");
             }
-            
+
             await _authTokenRepository.DeleteAuthTokenByRefreshTokenAsync(refreshToken);
+        }
+        catch (Exception e) when (e is AuthTokenNullOrEmptyServiceException)
+        {
+            throw;
         }
         catch (AuthTokenNotFoundRepositoryException e)
         {

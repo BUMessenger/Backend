@@ -87,7 +87,8 @@ public class UserService : IUserService
             
             return user;
         }
-        catch (Exception e) when (e is UserNotFoundServiceException)
+        catch (Exception e) when (e is UserNotFoundServiceException
+                                  or UserWrongPasswordServiceException)
         {
             throw;
         }
@@ -108,8 +109,12 @@ public class UserService : IUserService
                 _logger.LogInformation("User with id = {Id} wasn't found.", id);
                 throw new UserNotFoundServiceException($"User with id = {id} wasn't found.");
             }
-            
+
             return user;
+        }
+        catch (Exception e) when (e is UserNotFoundServiceException)
+        {
+            throw;
         }
         catch (Exception e)
         {
