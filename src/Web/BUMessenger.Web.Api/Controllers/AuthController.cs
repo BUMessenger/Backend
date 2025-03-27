@@ -62,6 +62,7 @@ public class AuthController : ControllerBase
         var user = await _userService.GetUserByIdAsync(refreshToken.UserId);
         
         var tokens = AuthTokensGenerator.GenerateTokensAsync(user, _jwtSettings);
+        tokens.RefreshToken = refreshToken.RefreshToken;
         
         return StatusCode(StatusCodes.Status200OK, tokens);
     }
