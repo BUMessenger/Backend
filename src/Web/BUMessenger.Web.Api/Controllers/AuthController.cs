@@ -48,4 +48,21 @@ public class AuthController : ControllerBase
 
         return StatusCode(StatusCodes.Status200OK, tokens);
     }
+
+    [HttpPost("refresh")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> RefreshAsync([FromBody] RefreshTokenDto refreshTokenDto)
+    {
+        var refreshToken = await _authTokenService.GetAuthTokenByRefreshTokenAsync(refreshTokenDto.RefreshToken);
+        
+        var user = await _userService.GetUserByIdAsync(refreshToken.UserId);
+        
+        var tokens = AuthTokensGenerator.GenerateTokensAsync(user, _jwtSettings);
+        
+        return StatusCode(StatusCodes.Status200OK, tokens);
+    }
 }

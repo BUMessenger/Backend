@@ -16,7 +16,7 @@ public class AuthTokenNotFoundServiceExceptionHandler : IExceptionHandler
 
         var response = new
         {
-            error = "Refresh токен не был найден.",
+            error = "Недействительный refresh token.",
             statusCode = StatusCodes.Status403Forbidden
         };
 
