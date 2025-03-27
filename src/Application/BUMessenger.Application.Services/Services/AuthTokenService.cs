@@ -29,4 +29,28 @@ public class AuthTokenService : IAuthTokenService
             throw new AuthTokenServiceException($"Failed to add auth token {authTokenCreate}.", e);
         }
     }
+
+    public async Task<AuthToken> GetAuthTokenByRefreshTokenAsync(string refreshToken)
+    {
+        try
+        {
+            var authToken = await _authTokenRepository.FindAuthTokenByRefreshTokenAsync(refreshToken);
+            if (authToken is null || authToken.ExpiresAtUtc > DateTime.UtcNow)
+            {
+                _logger.LogInformation("Refresh token {RefreshToken} not found.", refreshToken);
+                throw new AuthTokenNotFoundServiceException($"Refresh token {refreshToken} not found.");
+            }
+            
+            return authToken;
+        }
+        catch (Exception e) when (e is AuthTokenNotFoundServiceException)
+        {
+            throw;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Failed to find refresh token with value {RefreshToken}.", refreshToken);
+            throw new AuthTokenServiceException($"Failed to find refresh token with value {refreshToken}.", e);
+        }
+    }
 }

@@ -10,4 +10,11 @@ public interface IAuthTokenRepository
     /// <param name="authTokenCreate">Токен</param>
     /// <returns>Созданный токен</returns>
     Task<AuthToken> AddAuthTokenAsync(AuthTokenCreate authTokenCreate);
+    
+    /// <summary>
+    /// Получение сущности токена по его значению
+    /// </summary>
+    /// <param name="refreshToken">Значение токена</param>
+    /// <returns>Токен, если найден, null -- иначе</returns>
+    Task<AuthToken?> FindAuthTokenByRefreshTokenAsync(string refreshToken);
 }

@@ -3,6 +3,7 @@ using BUMessenger.DataAccess.Context;
 using BUMessenger.DataAccess.Models.Converters;
 using BUMessenger.Domain.Interfaces.Repositories;
 using BUMessenger.Domain.Models.Models.AuthTokens;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace BUMessenger.DataAccess.Repositories.Repositories;
@@ -33,6 +34,24 @@ public class AuthTokenRepository : IAuthTokenRepository
         {
             _logger.LogError("Failed to add auth token {AuthToken}.", authTokenCreate);
             throw new AuthTokenRepositoryException($"Failed to add auth token {authTokenCreate}.", e);
+        }
+    }
+
+    public async Task<AuthToken?> FindAuthTokenByRefreshTokenAsync(string refreshToken)
+    {
+        try
+        {
+            var authTokenDb = await _context.AuthTokens
+                .Where(a => a.RefreshToken == refreshToken)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
+            return authTokenDb.ToDomain();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Failed to find refresh token with value {RefreshToken}.", refreshToken);
+            throw new AuthTokenRepositoryException($"Failed to find refresh token with value {refreshToken}.", e);
         }
     }
 }

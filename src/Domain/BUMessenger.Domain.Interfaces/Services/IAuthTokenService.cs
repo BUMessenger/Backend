@@ -10,4 +10,11 @@ public interface IAuthTokenService
     /// <param name="authTokenCreate">Токен</param>
     /// <returns>Созданный токен</returns>
     Task<AuthToken> AddAuthTokenAsync(AuthTokenCreate authTokenCreate);
+    
+    /// <summary>
+    /// Получение сущности токена по его значению
+    /// </summary>
+    /// <param name="refreshToken">Значение токена</param>
+    /// <returns>Токен</returns>
+    Task<AuthToken> GetAuthTokenByRefreshTokenAsync(string refreshToken);
 }

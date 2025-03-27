@@ -1,5 +1,6 @@
 using BUMeesenger.Domain.Exceptions.Services.UnregisteredUserExceptions;
 using BUMessenger.Web.Api.ExceptionHandlers;
+using BUMessenger.Web.Api.ExceptionHandlers.AuthTokenExceptionHandlers;
 using BUMessenger.Web.Api.ExceptionHandlers.DefaultExceptionHandlers;
 using BUMessenger.Web.Api.ExceptionHandlers.EmailExceptionHandlers;
 using BUMessenger.Web.Api.ExceptionHandlers.UnregisteredUserExceptionHandlers;
@@ -18,6 +19,7 @@ public static class ExceptionHandlingExtension
         services.AddSingleton<IExceptionHandler, UserAlreadyExistsServiceExceptionHandler>();
         services.AddSingleton<IExceptionHandler, UserNotFoundServiceExceptionHandler>();
         services.AddSingleton<IExceptionHandler, UserAlreadyExistsServiceExceptionHandler>();
+        services.AddSingleton<IExceptionHandler, AuthTokenNotFoundServiceExceptionHandler>();
         services.AddSingleton<IExceptionHandler, DefaultExceptionHandler>();
 
         return services;
