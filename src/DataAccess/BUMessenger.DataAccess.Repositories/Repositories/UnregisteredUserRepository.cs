@@ -33,7 +33,7 @@ public class UnregisteredUserRepository : IUnregisteredUserRepository
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to add unregistered user {@UnregisteredUser}", unregisteredUser);
+            _logger.LogError(e, "Failed to add unregistered user {@UnregisteredUser}", unregisteredUser);
             throw new UnregisteredUserRepositoryException($"Failed to add unregistered user {unregisteredUser}", e);
         }
     }
@@ -51,7 +51,7 @@ public class UnregisteredUserRepository : IUnregisteredUserRepository
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to find unregistered user with email {@Email}", email);
+            _logger.LogError(e, "Failed to find unregistered user with email {@Email}", email);
             throw new UnregisteredUserRepositoryException($"Failed to find unregistered user with email {email}", e);
         }
     }
@@ -69,7 +69,7 @@ public class UnregisteredUserRepository : IUnregisteredUserRepository
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to find unregistered user with email {@Email}", email);
+            _logger.LogError(e, "Failed to find unregistered user with email {@Email}", email);
             throw new UnregisteredUserRepositoryException($"Failed to find unregistered user with email {email}", e);
         }
     }
@@ -84,7 +84,7 @@ public class UnregisteredUserRepository : IUnregisteredUserRepository
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to delete unregistered user with email {@Email}", email);
+            _logger.LogError(e, "Failed to delete unregistered user with email {@Email}", email);
             throw new UnregisteredUserRepositoryException($"Failed to delete unregistered user with email {email}", e);
         }
     }

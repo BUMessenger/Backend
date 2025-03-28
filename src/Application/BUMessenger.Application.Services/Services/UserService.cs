@@ -66,7 +66,7 @@ public class UserService : IUserService
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to add user {UserCreate}.", userCreate);
+            _logger.LogError(e, "Failed to add user {UserCreate}.", userCreate);
             throw new UserServiceException($"Failed to add user {userCreate}.", e);
         }
     }
@@ -99,7 +99,7 @@ public class UserService : IUserService
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to find user with email {@Email}", email);
+            _logger.LogError(e, "Failed to find user with email {@Email}", email);
             throw new UserServiceException($"Failed to find user with email {email}", e);
         }
     }
@@ -123,7 +123,7 @@ public class UserService : IUserService
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to find user with id {@Id}", id);
+            _logger.LogError(e, "Failed to find user with id {@Id}", id);
             throw new UserServiceException($"Failed to find user with id {id}", e);
         }
     }

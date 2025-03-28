@@ -32,7 +32,7 @@ public class AuthTokenRepository : IAuthTokenRepository
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to add auth token {AuthToken}.", authTokenCreate);
+            _logger.LogError(e, "Failed to add auth token {AuthToken}.", authTokenCreate);
             throw new AuthTokenRepositoryException($"Failed to add auth token {authTokenCreate}.", e);
         }
     }
@@ -50,7 +50,7 @@ public class AuthTokenRepository : IAuthTokenRepository
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to find refresh token with value {RefreshToken}.", refreshToken);
+            _logger.LogError(e, "Failed to find refresh token with value {RefreshToken}.", refreshToken);
             throw new AuthTokenRepositoryException($"Failed to find refresh token with value {refreshToken}.", e);
         }
     }
@@ -75,7 +75,7 @@ public class AuthTokenRepository : IAuthTokenRepository
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to delete refresh token with value {RefreshToken}.", refreshToken);
+            _logger.LogError(e, "Failed to delete refresh token with value {RefreshToken}.", refreshToken);
             throw new AuthTokenRepositoryException($"Failed to delete refresh token with value {refreshToken}.", e);
         }
     }
@@ -93,7 +93,7 @@ public class AuthTokenRepository : IAuthTokenRepository
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to find refresh token with id {Id}.", id);
+            _logger.LogError(e, "Failed to find refresh token with id {Id}.", id);
             throw new AuthTokenRepositoryException($"Failed to find refresh token with id {id}.", e);
         }
     }

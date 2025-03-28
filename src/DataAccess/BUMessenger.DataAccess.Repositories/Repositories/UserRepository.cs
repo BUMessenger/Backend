@@ -32,7 +32,7 @@ public class UserRepository : IUserRepository
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to add user {UserCreate}.", userCreate);
+            _logger.LogError(e, "Failed to add user {UserCreate}.", userCreate);
             throw new UserRepositoryException($"Failed to add user {userCreate}.", e);
         }
     }
@@ -50,7 +50,7 @@ public class UserRepository : IUserRepository
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to find users with email {@Email}", email);
+            _logger.LogError(e, "Failed to find users with email {@Email}", email);
             throw new UserRepositoryException($"Failed to find users with email {email}", e);
         }
     }
@@ -67,7 +67,7 @@ public class UserRepository : IUserRepository
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to find user with email {@Email}", email);
+            _logger.LogError(e, "Failed to find user with email {@Email}", email);
             throw new UserRepositoryException($"Failed to find user with email {email}", e);
         }
     }
@@ -84,7 +84,7 @@ public class UserRepository : IUserRepository
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to find user with id {@Id}", id);
+            _logger.LogError(e, "Failed to find user with id {@Id}", id);
             throw new UserRepositoryException($"Failed to find user with id {id}", e);
         }
     }
@@ -103,7 +103,7 @@ public class UserRepository : IUserRepository
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to find user with id {@Id}", userId);
+            _logger.LogError(e, "Failed to find user with id {@Id}", userId);
             throw new UserRepositoryException($"Failed to find user with id {userId}", e);
         }
     }

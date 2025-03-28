@@ -48,7 +48,7 @@ public class EmailService : IEmailService
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to send message to mailbox {ToEmail}.", toEmail);
+            _logger.LogError(e, "Failed to send message to mailbox {ToEmail}.", toEmail);
             throw new EmailServiceException($"Failed to send message to mailbox {toEmail}.", e);
         }
     }

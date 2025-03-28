@@ -58,7 +58,7 @@ public class UnregisteredUserService : IUnregisteredUserService
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to add unregistered user {@UnregisteredUser}", unregisteredUser);
+            _logger.LogError(e, "Failed to add unregistered user {@UnregisteredUser}", unregisteredUser);
             throw new UnregisteredUserServiceException($"Failed to add unregistered user {unregisteredUser}", e);
         }
     }

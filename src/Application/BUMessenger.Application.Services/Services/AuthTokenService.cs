@@ -26,7 +26,7 @@ public class AuthTokenService : IAuthTokenService
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to add auth token {AuthToken}.", authTokenCreate);
+            _logger.LogError(e, "Failed to add auth token {AuthToken}.", authTokenCreate);
             throw new AuthTokenServiceException($"Failed to add auth token {authTokenCreate}.", e);
         }
     }
@@ -57,7 +57,7 @@ public class AuthTokenService : IAuthTokenService
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to find refresh token with value {RefreshToken}.", refreshToken);
+            _logger.LogError(e, "Failed to find refresh token with value {RefreshToken}.", refreshToken);
             throw new AuthTokenServiceException($"Failed to find refresh token with value {refreshToken}.", e);
         }
     }
@@ -85,7 +85,7 @@ public class AuthTokenService : IAuthTokenService
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to revoke refresh token with value {RefreshToken}.", refreshToken);
+            _logger.LogError(e, "Failed to revoke refresh token with value {RefreshToken}.", refreshToken);
             throw new AuthTokenServiceException($"Failed to revoke refresh token with value {refreshToken}.", e);
         }
     }
@@ -100,7 +100,7 @@ public class AuthTokenService : IAuthTokenService
         }
         catch (Exception e)
         {
-            _logger.LogError("Failed to valid refresh token with id {Id}.", id);
+            _logger.LogError(e,"Failed to valid refresh token with id {Id}.", id);
             throw new AuthTokenServiceException($"Failed to valid refresh token with id {id}.", e);
         }
     }
