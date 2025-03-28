@@ -1,4 +1,5 @@
 using BUMeesenger.Domain.Exceptions.Services.UnregisteredUserExceptions;
+using BUMeesenger.Domain.Exceptions.Services.UserServiceExceptions;
 using BUMessenger.Web.Api.ExceptionHandlers;
 using BUMessenger.Web.Api.ExceptionHandlers.AuthTokenExceptionHandlers;
 using BUMessenger.Web.Api.ExceptionHandlers.DefaultExceptionHandlers;
@@ -22,6 +23,7 @@ public static class ExceptionHandlingExtension
         services.AddSingleton<IExceptionHandler, AuthTokenNotFoundServiceExceptionHandler>();
         services.AddSingleton<IExceptionHandler, AuthTokenNullOrEmptyServiceExceptionHandler>();
         services.AddSingleton<IExceptionHandler, AuthTokenExpiredServiceExceptionHandler>();
+        services.AddSingleton<IExceptionHandler, ExpiredApproveCodeUserServiceExceptionHandler>();
         services.AddSingleton<IExceptionHandler, DefaultExceptionHandler>();
 
         return services;
