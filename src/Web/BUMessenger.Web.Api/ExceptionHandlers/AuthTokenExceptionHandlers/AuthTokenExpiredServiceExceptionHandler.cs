@@ -2,11 +2,11 @@ using BUMeesenger.Domain.Exceptions.Services.AuthTokenExceptions;
 
 namespace BUMessenger.Web.Api.ExceptionHandlers.AuthTokenExceptionHandlers;
 
-public class AuthTokenNotFoundServiceExceptionHandler : IExceptionHandler
+public class AuthTokenExpiredServiceExceptionHandler : IExceptionHandler
 {
     public bool CanHandle(Exception exception)
     {
-        return exception is AuthTokenNotFoundServiceException;
+        return exception is AuthTokenExpiredServiceException;
     }
     
     public Task HandleExceptionAsync(HttpContext context, Exception exception)
@@ -16,7 +16,7 @@ public class AuthTokenNotFoundServiceExceptionHandler : IExceptionHandler
 
         var response = new
         {
-            error = "Refresh token не найден.",
+            error = "Refresh token недействителен.",
             statusCode = StatusCodes.Status403Forbidden
         };
 

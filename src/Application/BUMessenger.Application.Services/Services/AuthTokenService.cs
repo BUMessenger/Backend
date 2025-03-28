@@ -36,15 +36,22 @@ public class AuthTokenService : IAuthTokenService
         try
         {
             var authToken = await _authTokenRepository.FindAuthTokenByRefreshTokenAsync(refreshToken);
-            if (authToken is null || authToken.ExpiresAtUtc < DateTime.UtcNow)
+            if (authToken is null)
             {
                 _logger.LogInformation("Refresh token {RefreshToken} not found.", refreshToken);
                 throw new AuthTokenNotFoundServiceException($"Refresh token {refreshToken} not found.");
             }
+
+            if (authToken.ExpiresAtUtc < DateTime.UtcNow)
+            {
+                _logger.LogInformation("Refresh token {RefreshToken} was expired.", refreshToken);
+                throw new AuthTokenExpiredServiceException($"Refresh token {refreshToken} was expired.");
+            }
             
             return authToken;
         }
-        catch (Exception e) when (e is AuthTokenNotFoundServiceException)
+        catch (Exception e) when (e is AuthTokenNotFoundServiceException
+                                  or AuthTokenExpiredServiceException)
         {
             throw;
         }
