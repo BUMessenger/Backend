@@ -2,11 +2,11 @@ using BUMeesenger.Domain.Exceptions.Services.UserServiceExceptions;
 
 namespace BUMessenger.Web.Api.ExceptionHandlers.UserExceptionHandlers;
 
-public class WrongApproveCodeUserServiceExceptionHandler : IExceptionHandler
+public class ExpiredApproveCodeUserServiceExceptionHandler : IExceptionHandler
 {
     public bool CanHandle(Exception exception)
     {
-        return exception is WrongApproveCodeUserServiceException;
+        return exception is ExpiredApproveCodeUserServiceException;
     }
     
     public Task HandleExceptionAsync(HttpContext context, Exception exception)
@@ -16,7 +16,7 @@ public class WrongApproveCodeUserServiceExceptionHandler : IExceptionHandler
 
         var response = new
         {
-            error = "Введён неправильный код подтверждения.",
+            error = "Введён просроченный код подтверждения.",
             statusCode = StatusCodes.Status403Forbidden
         };
 

@@ -37,11 +37,16 @@ public class UserService : IUserService
                     $"Unregistered user with email = {userCreate.Email} not found.");
             }
 
-            if (unregisteredUser.ApproveCode != userCreate.ApproveCode ||
-                unregisteredUser.ExpiresAtUtc < DateTime.UtcNow)
+            if (unregisteredUser.ApproveCode != userCreate.ApproveCode)
             {
-                _logger.LogInformation("Wrong or expired approve code = {ApproveCode}.", userCreate.ApproveCode);
-                throw new WrongApproveCodeUserServiceException($"Wrong or expired approve code = {userCreate.ApproveCode}.");
+                _logger.LogInformation("Wrong approve code = {ApproveCode}.", userCreate.ApproveCode);
+                throw new WrongApproveCodeUserServiceException($"Wrong approve code = {userCreate.ApproveCode}.");
+            }
+
+            if (unregisteredUser.ExpiresAtUtc < DateTime.UtcNow)
+            {
+                _logger.LogInformation("Expired approve code = {ApproveCode}.", userCreate.ApproveCode);
+                throw new ExpiredApproveCodeUserServiceException($"Expired approve code = {userCreate.ApproveCode}.");
             }
 
             var passwordHashed = unregisteredUser.PasswordHashed;
