@@ -5,9 +5,9 @@ namespace BUMessenger.Domain.Interfaces.Services;
 public interface IUserService
 {
     /// <summary>
-    /// Создаёт нового незарегистрированного пользователя
+    /// Создаёт нового пользователя
     /// </summary>
-    /// <param name="userCreate">Незарегистрированный пользователь для добавления</param>
+    /// <param name="userCreate">Пользователь для добавления</param>
     /// <returns>Добавленный пользователь</returns>
     Task<User> AddUserAsync(UserCreate userCreate);
     
