@@ -21,9 +21,9 @@ public class UserConfiguration : IEntityTypeConfiguration<UserDb>
         
         builder.Property(u => u.PasswordHashed).IsRequired();
 
-        builder.HasOne(u => u.AuthToken)
+        builder.HasMany(u => u.AuthTokens)
             .WithOne(a => a.User)
-            .HasForeignKey<AuthTokenDb>(a => a.UserId);
+            .HasForeignKey(a => a.UserId);
         
         builder.HasMany(u => u.Messages)
             .WithOne(m => m.Creator)

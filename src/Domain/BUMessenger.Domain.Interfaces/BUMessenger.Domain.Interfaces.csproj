@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\BUMessenger.Domain.Models\BUMessenger.Domain.Models.csproj" />
+    </ItemGroup>
+
 </Project>

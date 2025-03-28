@@ -39,8 +39,7 @@ namespace BUMessenger.DataAccess.Context.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("AuthTokens");
                 });
@@ -175,8 +174,8 @@ namespace BUMessenger.DataAccess.Context.Migrations
             modelBuilder.Entity("BUMessenger.DataAccess.Models.Models.AuthTokenDb", b =>
                 {
                     b.HasOne("BUMessenger.DataAccess.Models.Models.UserDb", "User")
-                        .WithOne("AuthToken")
-                        .HasForeignKey("BUMessenger.DataAccess.Models.Models.AuthTokenDb", "UserId")
+                        .WithMany("AuthTokens")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -247,7 +246,7 @@ namespace BUMessenger.DataAccess.Context.Migrations
 
             modelBuilder.Entity("BUMessenger.DataAccess.Models.Models.UserDb", b =>
                 {
-                    b.Navigation("AuthToken");
+                    b.Navigation("AuthTokens");
 
                     b.Navigation("ChatUserInfos");
 

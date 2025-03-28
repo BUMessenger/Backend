@@ -6,4 +6,15 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\Domain\BUMessenger.Domain.Exceptions\BUMessenger.Domain.Exceptions.csproj" />
+      <ProjectReference Include="..\..\Domain\BUMessenger.Domain.Interfaces\BUMessenger.Domain.Interfaces.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="MailKit" Version="4.11.0" />
+      <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+      <PackageReference Include="MimeKit" Version="4.11.0" />
+    </ItemGroup>
+
 </Project>
