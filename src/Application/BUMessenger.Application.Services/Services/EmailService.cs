@@ -19,7 +19,7 @@ public class EmailService : IEmailService
     public EmailService(IOptions<EmailSettings> emailSettings,
         ILogger<IEmailService> logger)
     {
-        _emailSettings = emailSettings.Value;
+        _emailSettings = emailSettings.Value ?? throw new ArgumentNullException(nameof(emailSettings));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
