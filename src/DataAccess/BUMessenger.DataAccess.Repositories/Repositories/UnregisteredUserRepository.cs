@@ -81,8 +81,6 @@ public class UnregisteredUserRepository : IUnregisteredUserRepository
             await _context.UnregisteredUsers
                 .Where(u => u.Email == email)
                 .ExecuteDeleteAsync();
-            
-            await _context.SaveChangesAsync();
         }
         catch (Exception e)
         {
