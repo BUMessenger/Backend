@@ -19,12 +19,11 @@ public interface IUserRepository
     Task<bool> IsUserExistByEmailAsync(string email);
     
     /// <summary>
-    /// Получение пользователя по email и захешированному паролю
+    /// Получение пользователя по email
     /// </summary>
     /// <param name="email">Email</param>
-    /// <param name="passwordHashed">Захешированный пароль</param>
     /// <returns>Пользователь, если найден, null -- иначе</returns>
-    Task<User?> FindUserByEmailPasswordHashedAsync(string email, string passwordHashed);
+    Task<User?> FindUserByEmailAsync(string email);
     
     /// <summary>
     /// Получение пользователя по идентификатору
@@ -32,4 +31,12 @@ public interface IUserRepository
     /// <param name="id">Идентификатор</param>
     /// <returns>Пользователь, если найден, null -- иначе</returns>
     Task<User?> FindUserByIdAsync(Guid id);
+    
+    /// <summary>
+    /// Проверяет совпадение переданного пароля и пароля пользователя
+    /// </summary>
+    /// <param name="userId">Идентификатор пользователя</param>
+    /// <param name="password">Проверяемый пароль</param>
+    /// <returns>True -- пароли совпадают, false -- иначе</returns>
+    Task<bool> IsPasswordMatchAsync(Guid userId, string password);
 }

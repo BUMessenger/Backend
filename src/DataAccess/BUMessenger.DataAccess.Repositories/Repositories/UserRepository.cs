@@ -55,13 +55,13 @@ public class UserRepository : IUserRepository
         }
     }
 
-    public async Task<User?> FindUserByEmailPasswordHashedAsync(string email, string passwordHashed)
+    public async Task<User?> FindUserByEmailAsync(string email)
     {
         try
         {
             var userDb = await _context.Users
                 .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Email == email && u.PasswordHashed == passwordHashed);
+                .FirstOrDefaultAsync(u => u.Email == email);
 
             return userDb.ToDomain();
         }
@@ -86,6 +86,25 @@ public class UserRepository : IUserRepository
         {
             _logger.LogError("Failed to find user with id {@Id}", id);
             throw new UserRepositoryException($"Failed to find user with id {id}", e);
+        }
+    }
+    
+    public async Task<bool> IsPasswordMatchAsync(Guid userId, string password)
+    {
+        try
+        {
+            var realPassword = await _context.Users
+                .AsNoTracking()
+                .Where(u => u.Id == userId)
+                .Select(u => u.PasswordHashed)
+                .FirstOrDefaultAsync();
+            
+            return realPassword == password;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Failed to find user with id {@Id}", userId);
+            throw new UserRepositoryException($"Failed to find user with id {userId}", e);
         }
     }
 }

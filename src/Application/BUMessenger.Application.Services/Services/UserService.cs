@@ -75,16 +75,16 @@ public class UserService : IUserService
     {
         try
         {
-            if (!await _userRepository.IsUserExistByEmailAsync(email))
+            var user = await _userRepository.FindUserByEmailAsync(email);
+            if (user is null)
             {
                 _logger.LogInformation("User with email = {Email} wasn't found.", email);
                 throw new UserNotFoundServiceException($"User with email = {email} wasn't found.");
             }
             
             var passwordHashed = HashHelper.ComputeMD5Hash(password);
-
-            var user = await _userRepository.FindUserByEmailPasswordHashedAsync(email, passwordHashed);
-            if (user is null)
+            
+            if (! await _userRepository.IsPasswordMatchAsync(user.Id, passwordHashed))
             {
                 _logger.LogInformation("Wrong password for user with email = {Email}.", email);
                 throw new UserWrongPasswordServiceException($"Wrong password for user with email = {email}.");
