@@ -18,4 +18,43 @@ public static class UserConverterDto
             ApproveCode = userCreateDto.ApproveCode
         };
     }
+
+    [return: NotNullIfNotNull(nameof(userFiltersDto))]
+    public static UserFilters? ToDomain(this UserFiltersDto? userFiltersDto)
+    {
+        if (userFiltersDto is null)
+            return null;
+
+        return new UserFilters
+        {
+            Name = userFiltersDto.Name,
+            Surname = userFiltersDto.Surname,
+            Fathername = userFiltersDto.Fathername,
+            Email = userFiltersDto.Email,
+            ChatId = userFiltersDto.ChatId
+        };
+    }
+
+    [return: NotNullIfNotNull(nameof(user))]
+    public static UserDto? ToDto(this User? user)
+    {
+        if (user is null)
+            return null;
+
+        return new UserDto(id: user.Id,
+            name: user.Name,
+            surname: user.Surname,
+            fathername: user.Fathername,
+            email: user.Email);
+    }
+
+    [return: NotNullIfNotNull(nameof(users))]
+    public static UsersDto? ToDto(this Users? users)
+    {
+        if (users is null)
+            return null;
+
+        return new UsersDto(count: users.Count,
+            items: users.Items.ConvertAll(ToDto)!);
+    }
 }
