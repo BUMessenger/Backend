@@ -1,3 +1,4 @@
+using BUMessenger.Domain.Models.Models;
 using BUMessenger.Domain.Models.Models.Users;
 
 namespace BUMessenger.Domain.Interfaces.Repositories;
@@ -39,4 +40,12 @@ public interface IUserRepository
     /// <param name="password">Проверяемый пароль</param>
     /// <returns>True -- пароли совпадают, false -- иначе</returns>
     Task<bool> IsPasswordMatchAsync(Guid userId, string password);
+    
+    /// <summary>
+    /// Получает список пользователей по фильтрам
+    /// </summary>
+    /// <param name="userFilters">Фильтры пользователей</param>
+    /// <param name="pageFilters">Параметры пагинации</param>
+    /// <returns>Список пользователей</returns>
+    Task<Users> GetUsersByFiltersAsync(UserFilters userFilters, PageFilters pageFilters);
 }

@@ -1,3 +1,4 @@
+using BUMessenger.Domain.Models.Models;
 using BUMessenger.Domain.Models.Models.Users;
 
 namespace BUMessenger.Domain.Interfaces.Services;
@@ -25,4 +26,12 @@ public interface IUserService
     /// <param name="id">Идентификатор пользователя</param>
     /// <returns>Пользователь</returns>
     Task<User> GetUserByIdAsync(Guid id);
+    
+    /// <summary>
+    /// Получает список пользователей по фильтрам
+    /// </summary>
+    /// <param name="userFilters">Фильтры пользователей</param>
+    /// <param name="pageFilters">Параметры пагинации</param>
+    /// <returns>Список пользователей</returns>
+    Task<Users> GetUsersByFiltersAsync(UserFilters userFilters, PageFilters pageFilters);
 }
