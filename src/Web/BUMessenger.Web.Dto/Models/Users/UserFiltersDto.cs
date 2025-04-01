@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BUMessenger.Web.Dto.Models.Users;
 
@@ -7,37 +8,32 @@ public class UserFiltersDto
     /// <summary>
     /// Имя пользователя
     /// </summary>
-    [JsonRequired]
-    [JsonPropertyName("name")]
-    public string? Name { get; set; }
+    [FromQuery(Name = "name")]
+    public string? Name { get; set; } = null;
     
     /// <summary>
     /// Фамилия пользователя
     /// </summary>
-    [JsonRequired]
-    [JsonPropertyName("surname")]
-    public string? Surname { get; set; }
+    [FromQuery(Name = "surname")] 
+    public string? Surname { get; set; } = null;
     
     /// <summary>
     /// Отчество пользователя
     /// </summary>
-    [JsonRequired]
-    [JsonPropertyName("fathername")]
-    public string? Fathername { get; set; }
+    [FromQuery(Name = "fathername")] 
+    public string? Fathername { get; set; } = null;
     
     /// <summary>
     /// Почта пользователя
     /// </summary>
-    [JsonRequired]
-    [JsonPropertyName("email")]
-    public string? Email { get; set; }
+    [FromQuery(Name = "email")] 
+    public string? Email { get; set; } = null;
     
     /// <summary>
     /// Идентификатор чата пользователя
     /// </summary>
-    [JsonRequired]
-    [JsonPropertyName("chatId")]
-    public Guid? ChatId { get; set; }
+    [FromQuery(Name = "chatId")] 
+    public Guid? ChatId { get; set; } = null;
 
     public UserFiltersDto(string? name, 
         string? surname, 
@@ -50,5 +46,9 @@ public class UserFiltersDto
         Fathername = fathername;
         Email = email;
         ChatId = chatId;
+    }
+
+    public UserFiltersDto()
+    {
     }
 }

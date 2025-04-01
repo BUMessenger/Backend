@@ -3,6 +3,7 @@ using BUMeesenger.Domain.Exceptions.Services.UserServiceExceptions;
 using BUMessenger.Application.Services.Helpers;
 using BUMessenger.Domain.Interfaces.Repositories;
 using BUMessenger.Domain.Interfaces.Services;
+using BUMessenger.Domain.Models.Models;
 using BUMessenger.Domain.Models.Models.Converters;
 using BUMessenger.Domain.Models.Models.Users;
 using Microsoft.Extensions.Logging;
@@ -125,6 +126,19 @@ public class UserService : IUserService
         {
             _logger.LogError(e, "Failed to find user with id {@Id}", id);
             throw new UserServiceException($"Failed to find user with id {id}", e);
+        }
+    }
+
+    public async Task<Users> GetUsersByFiltersAsync(UserFilters userFilters, PageFilters pageFilters)
+    {
+        try
+        {
+            return await _userRepository.GetUsersByFiltersAsync(userFilters, pageFilters);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to get users by filters {@UserFilters}", userFilters);
+            throw new UserServiceException($"Failed to get users by filters {userFilters}", e);
         }
     }
 }
