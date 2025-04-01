@@ -83,4 +83,17 @@ public static class UserConverterDto
             Fathername = userNameUpdateDto.Fathername
         };
     }
+
+    [return: NotNullIfNotNull(nameof(userPasswordUpdateDto))]
+    public static UserPasswordUpdate? ToDomain(this UserPasswordUpdateDto? userPasswordUpdateDto)
+    {
+        if (userPasswordUpdateDto is null)
+            return null;
+
+        return new UserPasswordUpdate
+        {
+            OldPassword = userPasswordUpdateDto.OldPassword,
+            NewPassword = userPasswordUpdateDto.NewPassword
+        };
+    }
 }

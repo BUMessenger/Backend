@@ -100,6 +100,12 @@ public class UserRepository : IUserRepository
                 .Where(u => u.Id == userId)
                 .Select(u => u.PasswordHashed)
                 .FirstOrDefaultAsync();
+
+            if (realPassword is null)
+            {
+                _logger.LogInformation("User with id = {Id} not found.", userId);
+                throw new UserNotFoundRepositoryException($"User with id = {userId} not found.");
+            }
             
             return realPassword == password;
         }
@@ -137,7 +143,7 @@ public class UserRepository : IUserRepository
         }
     }
 
-    public async Task UpdatePasswordByIdAsync(Guid id, string passwordHashed)
+    public async Task<User> UpdatePasswordByIdAsync(Guid id, string passwordHashed)
     {
         try
         {
@@ -153,6 +159,8 @@ public class UserRepository : IUserRepository
 
             updatedUserDb.PasswordHashed = passwordHashed;
             await _context.SaveChangesAsync();
+            
+            return updatedUserDb.ToDomain();
         }
         catch (Exception e) when (e is UserNotFoundRepositoryException)
         {

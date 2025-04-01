@@ -56,4 +56,12 @@ public interface IUserService
     /// <param name="userNameUpdate">Новое ФИО</param>
     /// <returns>Пользователь</returns>
     Task<User> UpdateUserNameByIdAsync(Guid id, UserNameUpdate userNameUpdate);
+    
+    /// <summary>
+    /// Меняет пароль пользователя на новый, при условии, что правильно введён текущий
+    /// </summary>
+    /// <param name="id">Идентификатор пользователя</param>
+    /// <param name="userPasswordUpdate">Текущий и новый пароли</param>
+    /// <returns>Пользователь</returns>
+    Task<User> UpdateUserPasswordByIdAsync(Guid id, UserPasswordUpdate userPasswordUpdate);
 }
