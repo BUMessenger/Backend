@@ -57,4 +57,16 @@ public static class UserConverterDto
         return new UsersDto(count: users.Count,
             items: users.Items.ConvertAll(ToDto)!);
     }
+
+    [return: NotNullIfNotNull(nameof(userPasswordRecoveryDto))]
+    public static UserPasswordRecovery? ToDomain(this UserPasswordRecoveryDto? userPasswordRecoveryDto)
+    {
+        if (userPasswordRecoveryDto is null)
+            return null;
+
+        return new UserPasswordRecovery
+        {
+            Email = userPasswordRecoveryDto.Email
+        };
+    }
 }

@@ -82,4 +82,17 @@ public class UserController : ControllerBase
         
         return StatusCode(StatusCodes.Status200OK, user.ToDto());
     }
+
+    [HttpPost("password-recovery")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> RecoveryUserPassword([FromBody] UserPasswordRecoveryDto userPasswordRecoveryDto)
+    {
+        await _userService.RecoveryUserPasswordAsync(userPasswordRecoveryDto.ToDomain());
+        
+        return StatusCode(StatusCodes.Status200OK);
+    }
 }

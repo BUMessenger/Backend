@@ -48,4 +48,12 @@ public interface IUserRepository
     /// <param name="pageFilters">Параметры пагинации</param>
     /// <returns>Список пользователей</returns>
     Task<Users> GetUsersByFiltersAsync(UserFilters userFilters, PageFilters pageFilters);
+    
+    /// <summary>
+    /// Обновляет пароль пользователя по идентификатору
+    /// </summary>
+    /// <param name="id">Идентификатор пользователя</param>
+    /// <param name="passwordHashed">Новый пароль в захешированном виде</param>
+    /// <returns></returns>
+    Task UpdatePasswordByIdAsync(Guid id, string passwordHashed);
 }

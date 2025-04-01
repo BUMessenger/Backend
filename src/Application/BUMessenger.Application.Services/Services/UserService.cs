@@ -1,3 +1,5 @@
+using BUMeesenger.Domain.Exceptions.Repositories.UserExceptions;
+using BUMeesenger.Domain.Exceptions.Services.EmailServiceExceptions;
 using BUMeesenger.Domain.Exceptions.Services.UnregisteredUserExceptions;
 using BUMeesenger.Domain.Exceptions.Services.UserServiceExceptions;
 using BUMessenger.Application.Services.Helpers;
@@ -14,14 +16,17 @@ public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
     private readonly IUnregisteredUserRepository _unregisteredUserRepository;
+    private readonly IEmailService _emailService;
     private readonly ILogger<IUserService> _logger;
 
     public UserService(IUserRepository userRepository,
         IUnregisteredUserRepository unregisteredUserRepository,
+        IEmailService emailService,
         ILogger<IUserService> logger)
     {
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         _unregisteredUserRepository = unregisteredUserRepository ?? throw new ArgumentNullException(nameof(unregisteredUserRepository));
+        _emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -100,8 +105,8 @@ public class UserService : IUserService
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Failed to find user with email {@Email}", email);
-            throw new UserServiceException($"Failed to find user with email {email}", e);
+            _logger.LogError(e, "Failed to authorize user with email {@Email}", email);
+            throw new UserServiceException($"Failed to authorize user with email {email}", e);
         }
     }
 
@@ -139,6 +144,44 @@ public class UserService : IUserService
         {
             _logger.LogError(e, "Failed to get users by filters {@UserFilters}", userFilters);
             throw new UserServiceException($"Failed to get users by filters {userFilters}", e);
+        }
+    }
+
+    public async Task RecoveryUserPasswordAsync(UserPasswordRecovery userPasswordRecovery)
+    {
+        try
+        {
+            var user = await _userRepository.FindUserByEmailAsync(userPasswordRecovery.Email);
+            if (user is null)
+            {
+                _logger.LogInformation("User with email = {Email} wasn't found.", userPasswordRecovery.Email);
+                throw new UserNotFoundServiceException($"User with email = {userPasswordRecovery.Email} wasn't found.");
+            }
+
+            var newPassword = GeneratePasswordHelper.GenerateRandomString();
+
+            await _emailService.SendEmailAsync(userPasswordRecovery.Email,
+                "Сброс пароля в BUMessenger",
+                $"Ваш новый пароль для входа в BUMessenger: {newPassword}");
+
+            var passwordHashed = HashHelper.ComputeMD5Hash(newPassword);
+
+            await _userRepository.UpdatePasswordByIdAsync(user.Id, passwordHashed);
+        }
+        catch (Exception e) when (e is UserNotFoundServiceException
+                                      or ReceiverDoesntExistEmailServiceException)
+        {
+            throw;
+        }
+        catch (UserNotFoundRepositoryException)
+        {
+            _logger.LogInformation("User with email = {Email} not found.", userPasswordRecovery.Email);
+            throw new UserNotFoundServiceException($"User with email = {userPasswordRecovery.Email} not found.");
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to recovery password for user with email = {Email}", userPasswordRecovery.Email);
+            throw new UserServiceException($"Failed to recovery password for user with email = {userPasswordRecovery.Email}", e);
         }
     }
 }

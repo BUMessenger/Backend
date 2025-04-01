@@ -34,4 +34,11 @@ public interface IUserService
     /// <param name="pageFilters">Параметры пагинации</param>
     /// <returns>Список пользователей</returns>
     Task<Users> GetUsersByFiltersAsync(UserFilters userFilters, PageFilters pageFilters);
+    
+    /// <summary>
+    /// Сбрасывает пароль пользователя, новый присылает на почту
+    /// </summary>
+    /// <param name="userPasswordRecovery">Данные для сброса пароля</param>
+    /// <returns></returns>
+    Task RecoveryUserPasswordAsync(UserPasswordRecovery userPasswordRecovery);
 }

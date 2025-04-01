@@ -136,4 +136,32 @@ public class UserRepository : IUserRepository
             throw new UserRepositoryException($"Failed to get users by filters {userFilters}", e);
         }
     }
+
+    public async Task UpdatePasswordByIdAsync(Guid id, string passwordHashed)
+    {
+        try
+        {
+            var updatedUserDb = await _context.Users
+                .Where(u => u.Id == id)
+                .FirstOrDefaultAsync();
+
+            if (updatedUserDb is null)
+            {
+                _logger.LogInformation("User with id = {Id} not found.", id);
+                throw new UserNotFoundRepositoryException($"User with id = {id} not found.");
+            }
+
+            updatedUserDb.PasswordHashed = passwordHashed;
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception e) when (e is UserNotFoundRepositoryException)
+        {
+            throw;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to update user's password by id = {Id}", id);
+            throw new UserRepositoryException($"Failed to update user's password by id = {id}", e);
+        }
+    }
 }
