@@ -3,6 +3,7 @@ using BUMessenger.Domain.Models.Models.AuthTokens;
 using BUMessenger.Web.Api.Authentification;
 using BUMessenger.Web.Api.Authentification.Models;
 using BUMessenger.Web.Dto.Converters;
+using BUMessenger.Web.Dto.Models;
 using BUMessenger.Web.Dto.Models.Auth;
 using BUMessenger.Web.Dto.Models.Users;
 using Microsoft.AspNetCore.Authorization;
@@ -53,5 +54,18 @@ public class UserController : ControllerBase
             addedRefreshToken.RefreshToken);
 
         return StatusCode(StatusCodes.Status201Created, tokens);
+    }
+
+    [HttpGet]
+    [Authorize]
+    [ProducesResponseType(typeof(UsersDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetUsersByFiltersAsync(UserFiltersDto filtersDto, PageFiltersDto pageFiltersDto)
+    {
+        var users = await _userService.GetUsersByFiltersAsync(filtersDto.ToDomain(), pageFiltersDto.ToDomain());
+        
+        return StatusCode(StatusCodes.Status200OK, users.ToDto());
     }
 }

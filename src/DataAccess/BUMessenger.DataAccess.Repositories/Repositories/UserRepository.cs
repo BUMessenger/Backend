@@ -1,7 +1,9 @@
 using BUMeesenger.Domain.Exceptions.Repositories.UserExceptions;
 using BUMessenger.DataAccess.Context;
 using BUMessenger.DataAccess.Models.Converters;
+using BUMessenger.DataAccess.Repositories.Extensions;
 using BUMessenger.Domain.Interfaces.Repositories;
+using BUMessenger.Domain.Models.Models;
 using BUMessenger.Domain.Models.Models.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -105,6 +107,33 @@ public class UserRepository : IUserRepository
         {
             _logger.LogError(e, "Failed to find user with id {@Id}", userId);
             throw new UserRepositoryException($"Failed to find user with id {userId}", e);
+        }
+    }
+
+    public async Task<Users> GetUsersByFiltersAsync(UserFilters userFilters, PageFilters pageFilters)
+    {
+        try
+        {
+            var usersDbQueryable = _context.Users
+                .Include(u => u.ChatUserInfos)
+                .AsNoTracking()
+                .ApplyUserFilters(userFilters);
+
+            var usersDb = await usersDbQueryable
+                .Skip(pageFilters.Skip)
+                .Take(pageFilters.Limit)
+                .ToListAsync();
+
+            return new Users
+            {
+                Count = usersDbQueryable.Count(),
+                Items = usersDb.ConvertAll(UserConverterDb.ToDomain)!,
+            };
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to get users by filters {@UserFilters}", userFilters);
+            throw new UserRepositoryException($"Failed to get users by filters {userFilters}", e);
         }
     }
 }
