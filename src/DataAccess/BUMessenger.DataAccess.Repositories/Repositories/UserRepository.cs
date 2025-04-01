@@ -189,4 +189,37 @@ public class UserRepository : IUserRepository
             throw new UserRepositoryException($"Failed to delete user by id = {id}", e);
         }
     }
+
+    public async Task<User> UpdateUserNameByIdAsync(Guid id, UserNameUpdate userNameUpdate)
+    {
+        try
+        {
+            var userDb = await _context.Users
+                .Where(u => u.Id == id)
+                .FirstOrDefaultAsync();
+
+            if (userDb is null)
+            {
+                _logger.LogInformation("User with id = {Id} not found.", id);
+                throw new UserNotFoundRepositoryException($"User with id = {id} not found.");
+            }
+            
+            userDb.Name = userNameUpdate.Name;
+            userDb.Surname = userNameUpdate.Surname;
+            userDb.FatherName = userNameUpdate.Fathername;
+            
+            await _context.SaveChangesAsync();
+            
+            return userDb.ToDomain();
+        }
+        catch (Exception e) when (e is UserNotFoundRepositoryException)
+        {
+            throw;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to update user name = {@UserNameUpdate} by id = {Id}", userNameUpdate, id);
+            throw new UserRepositoryException($"Failed to update user name = {userNameUpdate} by id = {id}", e);
+        }
+    }
 }
