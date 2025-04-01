@@ -202,4 +202,22 @@ public class UserService : IUserService
             throw new UserServiceException($"Failed to delete user by id = {id}", e);
         }
     }
+
+    public async Task<User> UpdateUserNameByIdAsync(Guid id, UserNameUpdate userNameUpdate)
+    {
+        try
+        {
+            return await _userRepository.UpdateUserNameByIdAsync(id, userNameUpdate);
+        }
+        catch (UserNotFoundRepositoryException)
+        {
+            _logger.LogInformation("User with id = {Id} not found.", id);
+            throw new UserNotFoundServiceException($"User with id = {id} not found.");
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to update user name = {@UserNameUpdate} by id = {Id}", userNameUpdate, id);
+            throw new UserServiceException($"Failed to update user name = {userNameUpdate} by id = {id}", e);
+        }
+    }
 }

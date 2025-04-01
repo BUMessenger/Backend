@@ -109,4 +109,19 @@ public class UserController : ControllerBase
         
         return StatusCode(StatusCodes.Status204NoContent);
     }
+
+    [HttpPatch("{userId}/user-name")]
+    [Authorize]
+    [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> UpdateUserNameByIdAsync(Guid userId,
+        [FromBody] UserNameUpdateDto userNameUpdateDto)
+    {
+        var updatedUser = await _userService.UpdateUserNameByIdAsync(userId, userNameUpdateDto.ToDomain());
+        
+        return StatusCode(StatusCodes.Status200OK, updatedUser.ToDto());
+    }
 }

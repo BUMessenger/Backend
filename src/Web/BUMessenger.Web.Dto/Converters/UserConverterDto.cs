@@ -69,4 +69,18 @@ public static class UserConverterDto
             Email = userPasswordRecoveryDto.Email
         };
     }
+
+    [return: NotNullIfNotNull(nameof(userNameUpdateDto))]
+    public static UserNameUpdate? ToDomain(this UserNameUpdateDto? userNameUpdateDto)
+    {
+        if (userNameUpdateDto is null)
+            return null;
+
+        return new UserNameUpdate
+        {
+            Name = userNameUpdateDto.Name,
+            Surname = userNameUpdateDto.Surname,
+            Fathername = userNameUpdateDto.Fathername
+        };
+    }
 }

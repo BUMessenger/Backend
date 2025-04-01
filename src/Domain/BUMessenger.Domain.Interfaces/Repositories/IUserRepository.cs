@@ -63,4 +63,12 @@ public interface IUserRepository
     /// <param name="id">Идентификатор пользователя</param>
     /// <returns></returns>
     Task DeleteUserByIdAsync(Guid id);
+    
+    /// <summary>
+    /// Обновляет ФИО пользователя по его идентификатору
+    /// </summary>
+    /// <param name="id">Идентификатор пользователя</param>
+    /// <param name="userNameUpdate">Новое ФИО</param>
+    /// <returns>Пользователь</returns>
+    Task<User> UpdateUserNameByIdAsync(Guid id, UserNameUpdate userNameUpdate);
 }
