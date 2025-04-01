@@ -220,4 +220,36 @@ public class UserService : IUserService
             throw new UserServiceException($"Failed to update user name = {userNameUpdate} by id = {id}", e);
         }
     }
+
+    public async Task<User> UpdateUserPasswordByIdAsync(Guid id, UserPasswordUpdate userPasswordUpdate)
+    {
+        try
+        {
+            var currentPasswordHashed = HashHelper.ComputeMD5Hash(userPasswordUpdate.OldPassword);
+
+            if (!await _userRepository.IsPasswordMatchAsync(id, currentPasswordHashed))
+            {
+                _logger.LogInformation("Wrong password for user with id = {Id}.", id);
+                throw new UserWrongPasswordServiceException($"Wrong password for user with id = {id}.");
+            }
+
+            var newPasswordHashed = HashHelper.ComputeMD5Hash(userPasswordUpdate.NewPassword);
+
+            return await _userRepository.UpdatePasswordByIdAsync(id, newPasswordHashed);
+        }
+        catch (Exception e) when (e is UserWrongPasswordServiceException)
+        {
+            throw;
+        }
+        catch (UserNotFoundRepositoryException)
+        {
+            _logger.LogInformation("User with id = {Id} not found.", id);
+            throw new UserNotFoundServiceException($"User with id = {id} not found.");
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to update user password by id = {Id}", id);
+            throw new UserServiceException($"Failed to update user password by id = {id}", e);
+        }
+    }
 }
