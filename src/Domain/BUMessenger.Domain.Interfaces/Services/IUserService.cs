@@ -41,4 +41,11 @@ public interface IUserService
     /// <param name="userPasswordRecovery">Данные для сброса пароля</param>
     /// <returns></returns>
     Task RecoveryUserPasswordAsync(UserPasswordRecovery userPasswordRecovery);
+    
+    /// <summary>
+    /// Удаляет пользователя по идентификатору
+    /// </summary>
+    /// <param name="id">Идентификатор пользователя</param>
+    /// <returns></returns>
+    Task DeleteUserByIdAsync(Guid id);
 }

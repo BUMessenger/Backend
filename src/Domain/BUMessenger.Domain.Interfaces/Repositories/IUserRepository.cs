@@ -56,4 +56,11 @@ public interface IUserRepository
     /// <param name="passwordHashed">Новый пароль в захешированном виде</param>
     /// <returns></returns>
     Task UpdatePasswordByIdAsync(Guid id, string passwordHashed);
+    
+    /// <summary>
+    /// Удаляет пользователя по идентификатору
+    /// </summary>
+    /// <param name="id">Идентификатор пользователя</param>
+    /// <returns></returns>
+    Task DeleteUserByIdAsync(Guid id);
 }

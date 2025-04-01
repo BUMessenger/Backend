@@ -184,4 +184,22 @@ public class UserService : IUserService
             throw new UserServiceException($"Failed to recovery password for user with email = {userPasswordRecovery.Email}", e);
         }
     }
+
+    public async Task DeleteUserByIdAsync(Guid id)
+    {
+        try
+        {
+            await _userRepository.DeleteUserByIdAsync(id);
+        }
+        catch (UserNotFoundRepositoryException)
+        {
+            _logger.LogInformation("User with id = {Id} not found.", id);
+            throw new UserNotFoundServiceException($"User with id = {id} not found.");
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to delete user by id = {Id}", id);
+            throw new UserServiceException($"Failed to delete user by id = {id}", e);
+        }
+    }
 }
