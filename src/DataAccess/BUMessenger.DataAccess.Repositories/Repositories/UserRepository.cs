@@ -164,4 +164,29 @@ public class UserRepository : IUserRepository
             throw new UserRepositoryException($"Failed to update user's password by id = {id}", e);
         }
     }
+
+    public async Task DeleteUserByIdAsync(Guid id)
+    {
+        try
+        {
+            var deletedCount = await _context.Users
+                .Where(u => u.Id == id)
+                .ExecuteDeleteAsync();
+
+            if (deletedCount == 0)
+            {
+                _logger.LogInformation("User with id = {Id} not found.", id);
+                throw new UserNotFoundRepositoryException($"User with id = {id} not found.");
+            }
+        }
+        catch (Exception e) when (e is UserNotFoundRepositoryException)
+        {
+            throw;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to delete user by id = {Id}", id);
+            throw new UserRepositoryException($"Failed to delete user by id = {id}", e);
+        }
+    }
 }
