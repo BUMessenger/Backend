@@ -16,7 +16,7 @@ public class AuthTokenConfiguration : IEntityTypeConfiguration<AuthTokenDb>
         builder.Property(a => a.ExpiresAtUtc).IsRequired();
 
         builder.HasOne(a => a.User)
-            .WithOne(u => u.AuthToken)
-            .HasForeignKey<AuthTokenDb>(a => a.UserId);
+            .WithMany(u => u.AuthTokens)
+            .HasForeignKey(a => a.UserId);
     }
 }

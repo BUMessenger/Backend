@@ -35,7 +35,7 @@ public class UserDb
     /// <summary>
     /// Навигационное свойство для связи с таблицей токенов
     /// </summary>
-    public AuthTokenDb? AuthToken { get; set; }
+    public List<AuthTokenDb> AuthTokens { get; set; }
 
     /// <summary>
     /// Навигационное свойство для связи с таблицей сообщений

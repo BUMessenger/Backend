@@ -15,4 +15,11 @@
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\Domain\BUMessenger.Domain.Exceptions\BUMessenger.Domain.Exceptions.csproj" />
+      <ProjectReference Include="..\..\Domain\BUMessenger.Domain.Interfaces\BUMessenger.Domain.Interfaces.csproj" />
+      <ProjectReference Include="..\BUMessenger.DataAccess.Context\BUMessenger.DataAccess.Context.csproj" />
+      <ProjectReference Include="..\BUMessenger.DataAccess.Models\BUMessenger.DataAccess.Models.csproj" />
+    </ItemGroup>
+
 </Project>
