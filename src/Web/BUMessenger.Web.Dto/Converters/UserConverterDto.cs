@@ -1,5 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
+using BUMessenger.Domain.Models.Models;
 using BUMessenger.Domain.Models.Models.Users;
+using BUMessenger.Web.Dto.Models;
 using BUMessenger.Web.Dto.Models.Users;
 
 namespace BUMessenger.Web.Dto.Converters;
@@ -48,16 +50,6 @@ public static class UserConverterDto
             email: user.Email);
     }
 
-    [return: NotNullIfNotNull(nameof(users))]
-    public static UsersDto? ToDto(this Users? users)
-    {
-        if (users is null)
-            return null;
-
-        return new UsersDto(count: users.Count,
-            items: users.Items.ConvertAll(ToDto)!);
-    }
-
     [return: NotNullIfNotNull(nameof(userPasswordRecoveryDto))]
     public static UserPasswordRecovery? ToDomain(this UserPasswordRecoveryDto? userPasswordRecoveryDto)
     {
@@ -95,5 +87,15 @@ public static class UserConverterDto
             OldPassword = userPasswordUpdateDto.OldPassword,
             NewPassword = userPasswordUpdateDto.NewPassword
         };
+    }
+
+    [return: NotNullIfNotNull(nameof(users))]
+    public static PagedDto<UserDto>? ToDto(this Paged<User>? users)
+    {
+        if (users is null)
+            return null;
+
+        return new PagedDto<UserDto>(count: users.Count,
+            items: users.Items.ConvertAll(ToDto)!);
     }
 }

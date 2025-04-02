@@ -1,5 +1,6 @@
 using BUMessenger.Domain.Interfaces.Services;
 using BUMessenger.Domain.Models.Models.AuthTokens;
+using BUMessenger.Domain.Models.Models.Users;
 using BUMessenger.Web.Api.Authentification;
 using BUMessenger.Web.Api.Authentification.Models;
 using BUMessenger.Web.Dto.Converters;
@@ -58,7 +59,7 @@ public class UserController : ControllerBase
 
     [HttpGet]
     [Authorize]
-    [ProducesResponseType(typeof(UsersDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PagedDto<UserDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

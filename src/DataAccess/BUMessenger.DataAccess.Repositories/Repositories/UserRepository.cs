@@ -116,7 +116,7 @@ public class UserRepository : IUserRepository
         }
     }
 
-    public async Task<Users> GetUsersByFiltersAsync(UserFilters userFilters, PageFilters pageFilters)
+    public async Task<Paged<User>> GetUsersByFiltersAsync(UserFilters userFilters, PageFilters pageFilters)
     {
         try
         {
@@ -130,7 +130,7 @@ public class UserRepository : IUserRepository
                 .Take(pageFilters.Limit)
                 .ToListAsync();
 
-            return new Users
+            return new Paged<User>
             {
                 Count = usersDbQueryable.Count(),
                 Items = usersDb.ConvertAll(UserConverterDb.ToDomain)!,
