@@ -33,7 +33,7 @@ public interface IUserService
     /// <param name="userFilters">Фильтры пользователей</param>
     /// <param name="pageFilters">Параметры пагинации</param>
     /// <returns>Список пользователей</returns>
-    Task<Users> GetUsersByFiltersAsync(UserFilters userFilters, PageFilters pageFilters);
+    Task<Paged<User>> GetUsersByFiltersAsync(UserFilters userFilters, PageFilters pageFilters);
     
     /// <summary>
     /// Сбрасывает пароль пользователя, новый присылает на почту

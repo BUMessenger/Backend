@@ -134,7 +134,7 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<Users> GetUsersByFiltersAsync(UserFilters userFilters, PageFilters pageFilters)
+    public async Task<Paged<User>> GetUsersByFiltersAsync(UserFilters userFilters, PageFilters pageFilters)
     {
         try
         {
