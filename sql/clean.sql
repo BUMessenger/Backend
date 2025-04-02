@@ -1,7 +1,7 @@
 delete
-from "AuthToken"
-where "ExpiresAt" <= current_timestamp;
+from "AuthTokens"
+where "ExpiresAtUtc" <= current_timestamp;
 
 delete
-from "UnregistredUser"
-where "ExpiresAt" <= current_timestamp;
+from "UnregisteredUsers"
+where "ExpiresAtUtc" <= current_timestamp;
