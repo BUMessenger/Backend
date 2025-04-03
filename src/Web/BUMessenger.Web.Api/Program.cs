@@ -96,6 +96,7 @@ var app = builder.Build();
 var scope = app.Services.CreateScope();
 
 var services = scope.ServiceProvider;
+
 try
 {
     var context = services.GetRequiredService<BUMessengerContext>();
