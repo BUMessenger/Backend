@@ -15,7 +15,7 @@ public class UserRepository : IUserRepository
     private readonly BUMessengerContext _context;
     private readonly ILogger<UserRepository> _logger;
 
-    public UserRepository(BUMessengerContext context, Logger<UserRepository> logger)
+    public UserRepository(BUMessengerContext context, ILogger<UserRepository> logger)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
