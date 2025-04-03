@@ -104,11 +104,10 @@ try
     if (!context.Database.CanConnect())
     {
         Console.WriteLine("Error: Can't connect to database");
+        throw new Exception("Can't connect to database");
     }
-    else
-    {
-        Console.WriteLine("Connected to database");
-    }
+    
+    Console.WriteLine("Connected to database");
     
     var pendingMigrations = context.Database.GetPendingMigrations().ToList();
     if (pendingMigrations.Any())
