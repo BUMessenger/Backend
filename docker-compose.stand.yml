@@ -48,8 +48,14 @@ services:
     depends_on:
       - pgadmin
       - backend
+    env_file: settings.conf
     volumes:
       - ./nginx/nginx.stand.conf:/etc/nginx/nginx.conf
+    post_start:
+      - command: bash -c "apt update;
+                        apt install -y apache2-utils;
+                        mkdir /app;
+                        htpasswd -b -c /app/.htpasswd $${STAND_USERNAME} $${STAND_PASSWORD};"
     networks:
       - bum_backend_net
     ports:
