@@ -14,10 +14,10 @@ namespace BUMessenger.Application.Services.Services;
 public class EmailService : IEmailService
 {
     private readonly EmailSettings _emailSettings;
-    private readonly ILogger<IEmailService> _logger;
+    private readonly ILogger<EmailService> _logger;
 
     public EmailService(IOptions<EmailSettings> emailSettings,
-        ILogger<IEmailService> logger)
+        ILogger<EmailService> logger)
     {
         _emailSettings = emailSettings.Value ?? throw new ArgumentNullException(nameof(emailSettings));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
