@@ -13,9 +13,9 @@ namespace BUMessenger.DataAccess.Repositories.Repositories;
 public class UserRepository : IUserRepository
 {
     private readonly BUMessengerContext _context;
-    private readonly ILogger<IUserRepository> _logger;
+    private readonly ILogger<UserRepository> _logger;
 
-    public UserRepository(BUMessengerContext context, ILogger<IUserRepository> logger)
+    public UserRepository(BUMessengerContext context, Logger<UserRepository> logger)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));

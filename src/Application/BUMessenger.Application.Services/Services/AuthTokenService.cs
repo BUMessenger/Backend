@@ -10,9 +10,9 @@ namespace BUMessenger.Application.Services.Services;
 public class AuthTokenService : IAuthTokenService
 {
     private readonly IAuthTokenRepository _authTokenRepository;
-    private readonly ILogger<IAuthTokenService> _logger;
+    private readonly ILogger<AuthTokenService> _logger;
 
-    public AuthTokenService(IAuthTokenRepository authTokenRepository, ILogger<IAuthTokenService> logger)
+    public AuthTokenService(IAuthTokenRepository authTokenRepository, ILogger<AuthTokenService> logger)
     {
         _authTokenRepository = authTokenRepository ?? throw new ArgumentNullException(nameof(authTokenRepository));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
