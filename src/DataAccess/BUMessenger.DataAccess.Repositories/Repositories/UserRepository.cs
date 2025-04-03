@@ -132,7 +132,7 @@ public class UserRepository : IUserRepository
 
             return new Paged<User>
             {
-                Count = usersDbQueryable.Count(),
+                Count = await usersDbQueryable.CountAsync(),
                 Items = usersDb.ConvertAll(UserConverterDb.ToDomain)!,
             };
         }
