@@ -93,6 +93,41 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+var scope = app.Services.CreateScope();
+
+var services = scope.ServiceProvider;
+
+try
+{
+    var context = services.GetRequiredService<BUMessengerContext>();
+    
+    if (!context.Database.CanConnect())
+    {
+        Console.WriteLine("Error: Can't connect to database");
+        throw new Exception("Can't connect to database");
+    }
+    
+    Console.WriteLine("Connected to database");
+    
+    var pendingMigrations = context.Database.GetPendingMigrations().ToList();
+    if (pendingMigrations.Any())
+    {
+        Console.WriteLine($"Applying {pendingMigrations.Count} migrations...");
+        context.Database.Migrate();
+        Console.WriteLine("Migrations applied successfully");
+    }
+    else
+    {
+        Console.WriteLine("Database is up-to-date");
+    }
+}
+catch (Exception ex)
+{
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(ex, "An error occurred while migrating the database");
+    throw;
+}
+
 app.UseRouting();
 
 if (app.Environment.IsDevelopment())
@@ -105,15 +140,6 @@ app.UseAuthentication();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<RefreshTokenMiddleware>();
-
-var scope = app.Services.CreateScope();
-
-var dbContext = scope.ServiceProvider.GetRequiredService<BUMessengerContext>();
-
-if (!dbContext.Database.CanConnect())
-    Console.WriteLine("Error: Can't connect to database");
-else
-    Console.WriteLine("Connected to database");
 
 app.UseAuthorization();
 
