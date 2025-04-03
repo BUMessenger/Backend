@@ -159,14 +159,13 @@ public class UserService : IUserService
             }
 
             var newPassword = GeneratePasswordHelper.GenerateRandomString();
+            var passwordHashed = HashHelper.ComputeMD5Hash(newPassword);
+
+            await _userRepository.UpdatePasswordByIdAsync(user.Id, passwordHashed);
 
             await _emailService.SendEmailAsync(userPasswordRecovery.Email,
                 "Сброс пароля в BUMessenger",
                 $"Ваш новый пароль для входа в BUMessenger: {newPassword}");
-
-            var passwordHashed = HashHelper.ComputeMD5Hash(newPassword);
-
-            await _userRepository.UpdatePasswordByIdAsync(user.Id, passwordHashed);
         }
         catch (Exception e) when (e is UserNotFoundServiceException
                                       or ReceiverDoesntExistEmailServiceException)
