@@ -43,8 +43,8 @@ services:
       postgres:
         condition: service_healthy
     env_file: settings.conf
-    environment:
-      PGADMIN_LISTEN_PORT: 3000
+    ports:
+      - 3001:80
     volumes:
       - ./pgadmin4/servers.json:/pgadmin4/servers.json
       - ./settings.conf:/settings.conf
