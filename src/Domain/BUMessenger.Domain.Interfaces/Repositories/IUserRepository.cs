@@ -1,3 +1,4 @@
+using BUMessenger.Domain.Models.Models;
 using BUMessenger.Domain.Models.Models.Users;
 
 namespace BUMessenger.Domain.Interfaces.Repositories;
@@ -39,4 +40,35 @@ public interface IUserRepository
     /// <param name="password">Проверяемый пароль</param>
     /// <returns>True -- пароли совпадают, false -- иначе</returns>
     Task<bool> IsPasswordMatchAsync(Guid userId, string password);
+    
+    /// <summary>
+    /// Получает список пользователей по фильтрам
+    /// </summary>
+    /// <param name="userFilters">Фильтры пользователей</param>
+    /// <param name="pageFilters">Параметры пагинации</param>
+    /// <returns>Список пользователей</returns>
+    Task<Paged<User>> GetUsersByFiltersAsync(UserFilters userFilters, PageFilters pageFilters);
+    
+    /// <summary>
+    /// Обновляет пароль пользователя по идентификатору
+    /// </summary>
+    /// <param name="id">Идентификатор пользователя</param>
+    /// <param name="passwordHashed">Новый пароль в захешированном виде</param>
+    /// <returns></returns>
+    Task<User> UpdatePasswordByIdAsync(Guid id, string passwordHashed);
+    
+    /// <summary>
+    /// Удаляет пользователя по идентификатору
+    /// </summary>
+    /// <param name="id">Идентификатор пользователя</param>
+    /// <returns></returns>
+    Task DeleteUserByIdAsync(Guid id);
+    
+    /// <summary>
+    /// Обновляет ФИО пользователя по его идентификатору
+    /// </summary>
+    /// <param name="id">Идентификатор пользователя</param>
+    /// <param name="userNameUpdate">Новое ФИО</param>
+    /// <returns>Пользователь</returns>
+    Task<User> UpdateUserNameByIdAsync(Guid id, UserNameUpdate userNameUpdate);
 }

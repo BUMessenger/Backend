@@ -1,8 +1,10 @@
 using BUMessenger.Domain.Interfaces.Services;
 using BUMessenger.Domain.Models.Models.AuthTokens;
+using BUMessenger.Domain.Models.Models.Users;
 using BUMessenger.Web.Api.Authentification;
 using BUMessenger.Web.Api.Authentification.Models;
 using BUMessenger.Web.Dto.Converters;
+using BUMessenger.Web.Dto.Models;
 using BUMessenger.Web.Dto.Models.Auth;
 using BUMessenger.Web.Dto.Models.Users;
 using Microsoft.AspNetCore.Authorization;
@@ -53,5 +55,89 @@ public class UserController : ControllerBase
             addedRefreshToken.RefreshToken);
 
         return StatusCode(StatusCodes.Status201Created, tokens);
+    }
+
+    [HttpGet]
+    [Authorize]
+    [ProducesResponseType(typeof(PagedDto<UserDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetUsersByFiltersAsync(UserFiltersDto filtersDto, PageFiltersDto pageFiltersDto)
+    {
+        var users = await _userService.GetUsersByFiltersAsync(filtersDto.ToDomain(), pageFiltersDto.ToDomain());
+        
+        return StatusCode(StatusCodes.Status200OK, users.ToDto());
+    }
+
+    [HttpGet("{userId}")]
+    [Authorize]
+    [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetUserByIdAsync(Guid userId)
+    {
+        var user = await _userService.GetUserByIdAsync(userId);
+        
+        return StatusCode(StatusCodes.Status200OK, user.ToDto());
+    }
+
+    [HttpPost("password-recovery")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> RecoveryUserPassword([FromBody] UserPasswordRecoveryDto userPasswordRecoveryDto)
+    {
+        await _userService.RecoveryUserPasswordAsync(userPasswordRecoveryDto.ToDomain());
+        
+        return StatusCode(StatusCodes.Status200OK);
+    }
+
+    [HttpDelete("{userId}")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeleteUserByIdAsync(Guid userId)
+    {
+        await _userService.DeleteUserByIdAsync(userId);
+        
+        return StatusCode(StatusCodes.Status204NoContent);
+    }
+
+    [HttpPatch("{userId}/user-name")]
+    [Authorize]
+    [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> UpdateUserNameByIdAsync(Guid userId,
+        [FromBody] UserNameUpdateDto userNameUpdateDto)
+    {
+        var updatedUser = await _userService.UpdateUserNameByIdAsync(userId, userNameUpdateDto.ToDomain());
+        
+        return StatusCode(StatusCodes.Status200OK, updatedUser.ToDto());
+    }
+
+    [HttpPatch("{userId}/password")]
+    [Authorize]
+    [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> UpdateUserPasswordById(Guid userId,
+        [FromBody] UserPasswordUpdateDto userPasswordUpdateDto)
+    {
+        var updatedUser = await _userService.UpdateUserPasswordByIdAsync(userId, userPasswordUpdateDto.ToDomain());
+        
+        return StatusCode(StatusCodes.Status200OK, updatedUser.ToDto());
     }
 }

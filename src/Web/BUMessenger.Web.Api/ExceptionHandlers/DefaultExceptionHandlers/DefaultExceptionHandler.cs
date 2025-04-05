@@ -1,7 +1,9 @@
 namespace BUMessenger.Web.Api.ExceptionHandlers.DefaultExceptionHandlers;
 
-public class DefaultExceptionHandler : IExceptionHandler
+public class DefaultExceptionHandler(ILogger<DefaultExceptionHandler> logger) : IExceptionHandler
 {
+    private readonly ILogger<DefaultExceptionHandler> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    
     public bool CanHandle(Exception exception)
     {
         return false;
@@ -9,6 +11,8 @@ public class DefaultExceptionHandler : IExceptionHandler
     
     public Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
+        _logger.LogError(exception, exception.Message);
+        
         context.Response.StatusCode = StatusCodes.Status500InternalServerError;
         context.Response.ContentType = "application/json";
 

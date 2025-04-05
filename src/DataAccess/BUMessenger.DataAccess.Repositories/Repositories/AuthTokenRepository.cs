@@ -11,9 +11,9 @@ namespace BUMessenger.DataAccess.Repositories.Repositories;
 public class AuthTokenRepository : IAuthTokenRepository
 {
     private readonly BUMessengerContext _context;
-    private readonly ILogger<IAuthTokenRepository> _logger;
+    private readonly ILogger<AuthTokenRepository> _logger;
 
-    public AuthTokenRepository(BUMessengerContext context, ILogger<IAuthTokenRepository> logger)
+    public AuthTokenRepository(BUMessengerContext context, ILogger<AuthTokenRepository> logger)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));

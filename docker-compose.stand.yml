@@ -10,6 +10,12 @@ services:
     environment:
       POSTGRES_DB: bumessenger
       POSTGRES_USER: postgres
+    healthcheck:
+      test: bash -c "pg_isready -U postgres -d bumessenger"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
     volumes:
       - ./settings.conf:/settings.conf
     networks:
@@ -19,11 +25,13 @@ services:
     build:
       context: .
       dockerfile: ./backend.dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
     env_file: settings.conf
     environment:
       DOCKER_CONNECTION_STRING: Host=postgres;Port=5432;Database=bumessenger;Username=postgres;Password=
-    depends_on:
-      - postgres
+      ASPNETCORE_ENVIRONMENT: Development
     command: bash -c "export DOCKER_CONNECTION_STRING=$${DOCKER_CONNECTION_STRING}$${POSTGRES_PASSWORD};
                       ./BUMessenger.Web.Api"
     networks:
@@ -32,7 +40,8 @@ services:
   pgadmin:
     image: dpage/pgadmin4:9.0
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     env_file: settings.conf
     environment:
       PGADMIN_LISTEN_PORT: 3000
@@ -47,8 +56,14 @@ services:
     depends_on:
       - pgadmin
       - backend
+    env_file: settings.conf
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/nginx.stand.conf:/etc/nginx/nginx.conf
+    post_start:
+      - command: bash -c "apt update;
+                        apt install -y apache2-utils;
+                        mkdir /app;
+                        htpasswd -b -c /app/.htpasswd $${STAND_USERNAME} $${STAND_PASSWORD};"
     networks:
       - bum_backend_net
     ports:
