@@ -20,6 +20,13 @@ public interface IUserRepository
     Task<bool> IsUserExistByEmailAsync(string email);
     
     /// <summary>
+    /// True -- если пользователь с таким id существует, false -- иначе
+    /// </summary>
+    /// <param name="id">Идентификатор пользователя</param>
+    /// <returns>Флаг существования пользователя</returns>
+    Task<bool> IsUserExistByIdAsync(Guid id);
+    
+    /// <summary>
     /// Получение пользователя по email
     /// </summary>
     /// <param name="email">Email</param>

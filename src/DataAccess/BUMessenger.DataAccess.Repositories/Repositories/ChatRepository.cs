@@ -22,20 +22,7 @@ public class ChatRepository(BUMessengerContext context,
     {
         using var transaction = await _context.Database.BeginTransactionAsync();
         try
-        {
-            var existingUsers = await _context.Users
-                .Where(u => chatCreate.UsersIds.Contains(u.Id))
-                .Select(u => u.Id)
-                .ToListAsync();
-            
-            var missingUsers = chatCreate.UsersIds.Except(existingUsers).ToList();
-            
-            if (missingUsers.Count != 0)
-            {
-                _logger.LogError("Users with IDs {MissingUsers} not found.", missingUsers);
-                throw new ArgumentException($"Users with IDs {string.Join(", ", missingUsers)} not found.");
-            }
-            
+        { 
             var chatDb = new ChatDb(id: Guid.NewGuid(),
                 chatName: chatCreate.ChatName);
             
@@ -171,20 +158,17 @@ public class ChatRepository(BUMessengerContext context,
                 throw new ChatNotFoundRepositoryException($"Failed to find chat with id {chatId}");
             }
             
-            var userExists = await _context.Users.AnyAsync(u => u.Id == userId);
-            if (!userExists)
-            {
-                _logger.LogError("Failed to find user with id {@Id}", userId);
-                throw new UserNotFoundRepositoryException($"Failed to find user with id {userId}");
-            }
-            
             if (chatDb.ChatUserInfos.Any(cui => cui.UserId == userId))
             {
                 _logger.LogInformation("User {UserId} is already a member of chat {ChatId}.", userId, chatId);
                 return;
             }
 
-            var userChatInfo = new ChatUserInfoDb(Guid.NewGuid(), chatId, userId, null);
+            var userChatInfo = new ChatUserInfoDb(id: Guid.NewGuid(),
+                chatId: chatId,
+                userId: userId,
+                lastReadMessageId: null);
+            
             await _context.ChatUserInfos.AddAsync(userChatInfo);
             await _context.SaveChangesAsync();
         }
