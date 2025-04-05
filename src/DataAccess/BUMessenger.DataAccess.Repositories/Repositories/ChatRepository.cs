@@ -50,11 +50,9 @@ public class ChatRepository(BUMessengerContext context,
             await transaction.CommitAsync();
             
             var fullChatDb = await _context.Chats
-                .Where(c => c.Id == chatDb.Id)
-                .Include(c => c.ChatUserInfos)
-                .ThenInclude(cui => cui.User)
-                .FirstAsync();
-
+                .Include(c => c.Users)
+                .FirstAsync(c => c.Id == chatDb.Id);
+            
             return fullChatDb.ToDomain();
         }
         catch (Exception e)
@@ -73,6 +71,7 @@ public class ChatRepository(BUMessengerContext context,
             //todo еще раз проверить этот метод, он выглядит неэффективным
             var query = _context.Chats
                 .Where(c => c.ChatUserInfos.Any(cui => cui.UserId == userId))
+                .Include(c => c.Users)
                 .Include(c => c.Messages)
                 .Include(c => c.ChatUserInfos)
                 .AsNoTracking();
@@ -115,12 +114,10 @@ public class ChatRepository(BUMessengerContext context,
         try
         {
             var chatDb = await _context.Chats
-                .Where(c => c.Id == chatId)
-                .Include(c => c.ChatUserInfos)
-                .ThenInclude(cui => cui.User)
+                .Include(c => c.Users)
                 .AsNoTracking()
-                .FirstOrDefaultAsync();
-
+                .FirstOrDefaultAsync(c => c.Id == chatId);
+            
             return chatDb.ToDomain();
         }
         catch (Exception e)
@@ -135,6 +132,7 @@ public class ChatRepository(BUMessengerContext context,
         try
         {
             var chatDb = await _context.Chats
+                .Include(c => c.Users)
                 .FirstOrDefaultAsync(c => c.Id == chatId);
 
             if (chatDb is null)

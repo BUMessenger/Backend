@@ -13,17 +13,12 @@ public static class ChatConverterDb
     {
         if (chatDb is null)
             return null;
-
-        var users = chatDb.ChatUserInfos?
-            .Where(cui => cui.User != null)
-            .Select(cui => cui.User!.ToDomain())
-            .ToList() ?? [];
-
+        
         return new Chat
         {
             Id = chatDb.Id,
             ChatName = chatDb.ChatName,
-            Users = users
+            Users = chatDb.Users.Select(u => u.ToDomain()).ToList()
         };
     }
     

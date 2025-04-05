@@ -28,9 +28,5 @@ public class UserConfiguration : IEntityTypeConfiguration<UserDb>
         builder.HasMany(u => u.Messages)
             .WithOne(m => m.Creator)
             .HasForeignKey(m => m.CreatorId);
-        
-        builder.HasMany(u => u.ChatUserInfos)
-            .WithOne(cu => cu.User)
-            .HasForeignKey(cu => cu.UserId);
     }
 }
