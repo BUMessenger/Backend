@@ -26,6 +26,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BUMessenger.Web.Api", "Web\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BUMessenger.Web.Dto", "Web\BUMessenger.Web.Dto\BUMessenger.Web.Dto.csproj", "{6572539A-178D-42E2-B9DC-9B81CF936CD7}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BUMessenger.Tests", "BUMessenger.Tests", "{36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BUMessenger.Tests.UnitTests", "Tests\BUMessenger.Tests.UnitTests\BUMessenger.Tests.UnitTests.csproj", "{5B4E727D-225A-405C-8777-9A418449CB75}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +72,13 @@ Global
 		{6572539A-178D-42E2-B9DC-9B81CF936CD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6572539A-178D-42E2-B9DC-9B81CF936CD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6572539A-178D-42E2-B9DC-9B81CF936CD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B4E727D-225A-405C-8777-9A418449CB75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B4E727D-225A-405C-8777-9A418449CB75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B4E727D-225A-405C-8777-9A418449CB75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B4E727D-225A-405C-8777-9A418449CB75}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{2AF83009-881C-4D7D-9639-8E54FD04AD17} = {287483E2-7DC1-4403-BFD0-4686ED79BB88}
@@ -79,5 +90,9 @@ Global
 		{7127DC20-27BC-4536-8793-C8D6C1B094EE} = {E2F13A5C-FFA6-4153-98A4-3BD5C386A4DF}
 		{A66F382C-D187-41AF-A062-4C50DE6312CA} = {09514465-071D-4314-A0AB-1B88ED1E86CC}
 		{6572539A-178D-42E2-B9DC-9B81CF936CD7} = {09514465-071D-4314-A0AB-1B88ED1E86CC}
+		{5B4E727D-225A-405C-8777-9A418449CB75} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4BD3D9DD-E898-422E-B2B5-755079A1C668}
 	EndGlobalSection
 EndGlobal
