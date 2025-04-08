@@ -12,6 +12,7 @@ services:
       POSTGRES_USER: postgres
     volumes:
       - ./settings.conf:/settings.conf
+      - /var/lib/postgresql:/var/lib/postgresql
     networks:
       - bum_backend_net
     ports:
