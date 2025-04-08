@@ -32,8 +32,9 @@ services:
     env_file: settings.conf
     environment:
       DOCKER_CONNECTION_STRING: Host=postgres;Port=5432;Database=bumessenger;Username=postgres;Password=
-    command: bash -c "export DOCKER_CONNECTION_STRING=$${DOCKER_CONNECTION_STRING}$${POSTGRES_PASSWORD};
-                      ./BUMessenger.Web.Api"
+    command: bash -c "export DOCKER_CONNECTION_STRING=$${DOCKER_CONNECTION_STRING}$${POSTGRES_PASSWORD}; ./BUMessenger.Web.Api"
+    volumes:
+      - ./logs:/app/logs
     networks:
       - bum_backend_net
 
