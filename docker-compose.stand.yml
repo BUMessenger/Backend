@@ -18,6 +18,7 @@ services:
       start_period: 5s
     volumes:
       - ./settings.conf:/settings.conf
+      - /var/lib/postgresql:/var/lib/postgresql
     networks:
       - bum_backend_net
 
