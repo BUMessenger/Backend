@@ -6,6 +6,7 @@ networks:
 services:
   postgres:
     image: postgres:17.4
+    container_name: bumessenger-postgres
     env_file: settings.conf
     environment:
       POSTGRES_DB: bumessenger
@@ -23,9 +24,11 @@ services:
       - bum_backend_net
 
   backend:
+    image: bumessenger-backend:latest
     build:
       context: .
       dockerfile: ./backend.dockerfile
+    container_name: bumessenger-backend
     depends_on:
       postgres:
         condition: service_healthy
@@ -43,6 +46,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    container_name: bumessenger-pgadmin
     env_file: settings.conf
     ports:
       - 3001:80
@@ -54,6 +58,7 @@ services:
 
   nginx:
     image: nginx:1.17.4
+    container_name: bumessenger-nginx
     depends_on:
       - pgadmin
       - backend
