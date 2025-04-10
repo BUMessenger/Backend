@@ -6,6 +6,7 @@ networks:
 services:
   postgres:
     image: postgres:17.4
+    container_name: bumessenger-postgres
     env_file: settings.conf
     environment:
       POSTGRES_DB: bumessenger
@@ -18,21 +19,25 @@ services:
       start_period: 5s
     volumes:
       - ./settings.conf:/settings.conf
+      - /var/lib/postgresql:/var/lib/postgresql
     networks:
       - bum_backend_net
 
   backend:
+    image: bumessenger-backend:latest
     build:
       context: .
       dockerfile: ./backend.dockerfile
+    container_name: bumessenger-backend
     depends_on:
       postgres:
         condition: service_healthy
     env_file: settings.conf
     environment:
       DOCKER_CONNECTION_STRING: Host=postgres;Port=5432;Database=bumessenger;Username=postgres;Password=
-    command: bash -c "export DOCKER_CONNECTION_STRING=$${DOCKER_CONNECTION_STRING}$${POSTGRES_PASSWORD};
-                      ./BUMessenger.Web.Api"
+    command: bash -c "export DOCKER_CONNECTION_STRING=$${DOCKER_CONNECTION_STRING}$${POSTGRES_PASSWORD}; ./BUMessenger.Web.Api"
+    volumes:
+      - ./logs:/app/logs
     networks:
       - bum_backend_net
 
@@ -41,9 +46,10 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    container_name: bumessenger-pgadmin
     env_file: settings.conf
-    environment:
-      PGADMIN_LISTEN_PORT: 3000
+    ports:
+      - 3001:80
     volumes:
       - ./pgadmin4/servers.json:/pgadmin4/servers.json
       - ./settings.conf:/settings.conf
@@ -52,6 +58,7 @@ services:
 
   nginx:
     image: nginx:1.17.4
+    container_name: bumessenger-nginx
     depends_on:
       - pgadmin
       - backend
