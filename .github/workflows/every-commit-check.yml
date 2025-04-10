@@ -1,13 +1,11 @@
 name: Every commit code check
 on:
   push:
-    branches:
-      - ! main
-      - *
+    branches_ignore:
+      - main
   pull_request:
-    branches:
-      - ! main
-      - *
+    branches_ignore:
+      - main
 jobs:
   build:
     runs-on: ubuntu-latest
