@@ -26,6 +26,9 @@ jobs:
           dotnet test ./src/Tests/BUMessenger.Tests.UnitTests/BUMessenger.Tests.UnitTests.csproj
   release:
     runs-on: ubuntu-latest
+    needs:
+      - build
+      - testing
     steps:
       - uses: actions/checkout@v4 
       - name: Release
