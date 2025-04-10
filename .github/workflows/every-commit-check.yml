@@ -21,3 +21,9 @@ jobs:
       - name: Testing
         run: |
           dotnet test ./src/Tests/BUMessenger.Tests.UnitTests/BUMessenger.Tests.UnitTests.csproj
+          if [[ 0 == $? ]]
+          then
+            echo "TESTS_STATUS=success" >> $GITHUB_ENV
+          else
+            echo "TESTS_STATUS=failed" >> $GITHUB_ENV
+          fi
