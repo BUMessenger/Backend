@@ -2,11 +2,11 @@ name: Every commit code check
 on:
   push:
     branches:
-      - !main
+      - ! main
       - *
   pull_request:
     branches:
-      - !main
+      - ! main
       - *
 jobs:
   build:
