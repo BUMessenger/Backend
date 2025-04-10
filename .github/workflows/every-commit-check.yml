@@ -1,12 +1,11 @@
-name: Building
+name: Every commit code check
 on: push
 jobs:
-  building:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Building
+      - uses: actions/checkout@v4 
+      - name: Build
         run: |
           docker compose -f ./.github/docker-compose.yml --project-directory ./ up --exit-code-from backend
           if [[ 0 == $? ]]
@@ -15,3 +14,9 @@ jobs:
           else
             echo "TESTS_STATUS=failed" >> $GITHUB_ENV
           fi
+  testing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Testing
+        run: |
+          dotnet test ./src/Tests/BUMessenger.Tests.UnitTests/BUMessenger.Tests.UnitTests.csproj
