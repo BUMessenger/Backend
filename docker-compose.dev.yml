@@ -6,7 +6,7 @@ networks:
 services:
   postgres:
     image: postgres:17.4
-    container_name: bumessenger-postgres
+    container_name: dev-postgres
     env_file: settings.conf
     environment:
       POSTGRES_DB: bumessenger
@@ -23,7 +23,7 @@ services:
     image: dpage/pgadmin4:9.0
     depends_on:
       - postgres
-    container_name: bumessenger-pgadmin
+    container_name: dev-pgadmin
     env_file: settings.conf
     volumes:
       - ./pgadmin4/servers.json:/pgadmin4/servers.json
