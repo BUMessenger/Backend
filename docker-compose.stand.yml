@@ -6,7 +6,7 @@ networks:
 services:
   postgres:
     image: postgres:17.4
-    container_name: bumessenger-postgres
+    container_name: stand-postgres
     env_file: settings.conf
     environment:
       POSTGRES_DB: bumessenger
@@ -24,14 +24,14 @@ services:
       - bum_backend_net
 
   backend:
-    image: bumessenger-backend:latest
+    image: stand-backend:latest
     build:
       context: .
       dockerfile: ./backend.dockerfile
     depends_on:
       postgres:
         condition: service_healthy
-    container_name: bumessenger-backend
+    container_name: stand-backend
     env_file: settings.conf
     environment:
       DOCKER_CONNECTION_STRING: Host=postgres;Port=5432;Database=bumessenger;Username=postgres;Password=
@@ -47,7 +47,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    container_name: bumessenger-pgadmin
+    container_name: stand-pgadmin
     env_file: settings.conf
     ports:
       - 3001:80
@@ -62,7 +62,7 @@ services:
     depends_on:
       - pgadmin
       - backend
-    container_name: bumessenger-nginx
+    container_name: stand-nginx
     env_file: settings.conf
     volumes:
       - ./nginx/nginx.stand.conf:/etc/nginx/nginx.conf
