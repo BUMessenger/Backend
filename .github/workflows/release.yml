@@ -35,4 +35,4 @@ jobs:
         run: |
           docker build --tag bumessenger/backend:latest ./ -f ./backend.dockerfile
           docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
-        docker push bumessenger/backend:latest
+          docker push bumessenger/backend:latest
