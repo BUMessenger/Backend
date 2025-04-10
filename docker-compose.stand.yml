@@ -1,0 +1,72 @@
+networks:
+  bum_backend_net:
+    driver: bridge
+    name: bum_backend_net
+
+services:
+  postgres:
+    image: postgres:17.4
+    container_name: stand-postgres
+    env_file: settings.conf
+    environment:
+      POSTGRES_DB: bumessenger
+      POSTGRES_USER: postgres
+    healthcheck:
+      test: bash -c "pg_isready -U postgres -d bumessenger"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    volumes:
+      - ./settings.conf:/settings.conf
+      - /var/lib/postgresql:/var/lib/postgresql
+    networks:
+      - bum_backend_net
+
+  backend:
+    image: stand-backend:latest
+    build:
+      context: .
+      dockerfile: ./backend.dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    container_name: stand-backend
+    env_file: settings.conf
+    environment:
+      DOCKER_CONNECTION_STRING: Host=postgres;Port=5432;Database=bumessenger;Username=postgres;Password=
+      ASPNETCORE_ENVIRONMENT: Development
+    command: bash -c "export DOCKER_CONNECTION_STRING=$${DOCKER_CONNECTION_STRING}$${POSTGRES_PASSWORD}; ./BUMessenger.Web.Api"
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - bum_backend_net
+
+  pgadmin:
+    image: dpage/pgadmin4:9.0
+    depends_on:
+      postgres:
+        condition: service_healthy
+    container_name: stand-pgadmin
+    env_file: settings.conf
+    ports:
+      - 3001:80
+    volumes:
+      - ./pgadmin4/servers.json:/pgadmin4/servers.json
+      - ./settings.conf:/settings.conf
+    networks:
+      - bum_backend_net
+
+  nginx:
+    image: nginx:1.17.4
+    depends_on:
+      - pgadmin
+      - backend
+    container_name: stand-nginx
+    env_file: settings.conf
+    volumes:
+      - ./nginx/nginx.stand.conf:/etc/nginx/nginx.conf
+    networks:
+      - bum_backend_net
+    ports:
+      - 5674:80

@@ -1,0 +1,34 @@
+networks:
+  bum_backend_net:
+    driver: bridge
+    name: bum_backend_net
+
+services:
+  postgres:
+    image: postgres:17.4
+    container_name: dev-postgres
+    env_file: settings.conf
+    environment:
+      POSTGRES_DB: bumessenger
+      POSTGRES_USER: postgres
+    volumes:
+      - ./settings.conf:/settings.conf
+      - /var/lib/postgresql:/var/lib/postgresql
+    networks:
+      - bum_backend_net
+    ports:
+      - 1234:5432
+
+  pgadmin:
+    image: dpage/pgadmin4:9.0
+    depends_on:
+      - postgres
+    container_name: dev-pgadmin
+    env_file: settings.conf
+    volumes:
+      - ./pgadmin4/servers.json:/pgadmin4/servers.json
+      - ./settings.conf:/settings.conf
+    networks:
+      - bum_backend_net
+    ports:
+      - 3000:80

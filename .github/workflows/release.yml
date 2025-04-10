@@ -1,0 +1,38 @@
+name: Release
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4 
+      - name: Build
+        run: |
+          docker compose -f ./.github/docker-compose.yml --project-directory ./ up --exit-code-from backend
+          if [[ 0 == $? ]]
+          then
+            echo "TESTS_STATUS=success" >> $GITHUB_ENV
+          else
+            echo "TESTS_STATUS=failed" >> $GITHUB_ENV
+          fi
+  testing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4 
+      - name: Testing
+        run: |
+          dotnet test ./src/Tests/BUMessenger.Tests.UnitTests/BUMessenger.Tests.UnitTests.csproj
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4 
+      - name: Release
+        run: |
+          docker build --tag bumessenger/backend:latest ./ -f ./backend.dockerfile
+          docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+        docker push bumessenger/backend:latest

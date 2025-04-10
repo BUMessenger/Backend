@@ -1,0 +1,12 @@
+networks:
+  bum_backend_net:
+    driver: bridge
+    name: bum_backend_net
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: ./backend.dockerfile
+    networks:
+      - bum_backend_net
