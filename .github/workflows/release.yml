@@ -23,12 +23,14 @@ jobs:
   testing:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4 
       - name: Testing
         run: |
           dotnet test ./src/Tests/BUMessenger.Tests.UnitTests/BUMessenger.Tests.UnitTests.csproj
   release:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4 
       - name: Release
         run: |
           docker build --tag bumessenger/backend:latest ./ -f ./backend.dockerfile
