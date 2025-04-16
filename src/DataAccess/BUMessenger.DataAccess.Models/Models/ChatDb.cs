@@ -21,6 +21,11 @@ public class ChatDb
     /// Навигационное свойство для связи с таблицей информации о чатах и пользователях
     /// </summary>
     public List<ChatUserInfoDb> ChatUserInfos { get; set; } = [];
+    
+    /// <summary>
+    /// Навигационное свойство для связи с таблицей пользователей
+    /// </summary>
+    public List<UserDb> Users { get; set; } = [];
 
     public ChatDb(Guid id, string chatName)
     {

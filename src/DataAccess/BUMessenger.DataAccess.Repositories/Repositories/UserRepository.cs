@@ -56,6 +56,24 @@ public class UserRepository : IUserRepository
             throw new UserRepositoryException($"Failed to find users with email {email}", e);
         }
     }
+    
+    public async Task<bool> IsUserExistByIdAsync(Guid id)
+    {
+        try
+        {
+            var usersCount = await _context.Users
+                .Where(u => u.Id == id)
+                .AsNoTracking()
+                .CountAsync();
+
+            return usersCount > 0;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to find users with id {@Id}", id);
+            throw new UserRepositoryException($"Failed to find users with id {id}", e);
+        }
+    }
 
     public async Task<User?> FindUserByEmailAsync(string email)
     {
