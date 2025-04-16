@@ -17,14 +17,29 @@ public class ChatService(IChatRepository chatRepository,
     private readonly IUserRepository _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
     private readonly ILogger<ChatService> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     
-    public async Task<Chat> CreateChatAsync(ChatCreate chatCreate)
+    public async Task<Chat> CreateChatAsync(Guid creatorId, ChatCreate chatCreate)
     {
         try
         {
             await ThrowIfSomeUsersNotExist(chatCreate.UsersIds);
-            return await _chatRepository.CreateChatAsync(chatCreate);
+            
+            if (chatCreate.UsersIds.Contains(creatorId))
+            {
+                chatCreate.UsersIds.Remove(creatorId);
+            }
+            
+            if (string.IsNullOrWhiteSpace(chatCreate.ChatName))
+            {
+                _logger.LogError("Failed to create chat {@ChatCreate} for user with id {CreatorId}. " +
+                                 "Chat name cannot be empty.", chatCreate, creatorId);
+                throw new EmptyChatNameServiceException($"Failed to create chat {chatCreate} for user with id {creatorId}." +
+                                            "Chat name cannot be empty.");
+            }
+            
+            return await _chatRepository.CreateChatAsync(creatorId, chatCreate);
         }
-        catch (Exception e) when (e is UserNotFoundServiceException)
+        catch (Exception e) when (e is UserNotFoundServiceException
+                                  or EmptyChatNameServiceException)
         {
             throw;
         }
@@ -34,8 +49,7 @@ public class ChatService(IChatRepository chatRepository,
             throw new ChatServiceException($"Failed to create chat {chatCreate}.", e);
         }
     }
-
-    //todo подумать как можно переписать репозиторий этого метода (возможно вообще перепроектировать)
+    
     public async Task<Paged<ChatSummary>> GetChatsByUserIdAsync(Guid userId, PageFilters filters)
     {
         try
@@ -49,8 +63,8 @@ public class ChatService(IChatRepository chatRepository,
             throw new ChatServiceException($"Failed to get chats by user ID {userId}.", e);
         }
     }
-
-    public async Task<Chat> GetChatByIdAsync(Guid chatId)
+    
+    public async Task<Chat> GetChatByIdAsync(Guid chatId, Guid userId)
     {
         try
         {
@@ -58,12 +72,19 @@ public class ChatService(IChatRepository chatRepository,
             if (chat == null)
             {
                 _logger.LogInformation("Chat with id = {Id} wasn't found.", chatId);
-                throw new ChatNotFoundServiceException($"User with id = {chatId} wasn't found.");
+                throw new ChatNotFoundServiceException($"Chat with id = {chatId} wasn't found.");
+            }
+            
+            if (!await _chatRepository.UserInChatAsync(chatId, userId))
+            {
+                _logger.LogError("User with id {UserId} is not in chat with id {ChatId}.", userId, chatId);
+                throw new UserNotInChatServiceException($"User with id {userId} is not in chat with id {chatId}.");
             }
 
             return chat;
         }
-        catch (Exception e) when (e is ChatNotFoundServiceException)
+        catch (Exception e) when (e is ChatNotFoundServiceException
+                                  or UserNotInChatServiceException)
         {
             throw;
         }
@@ -73,28 +94,46 @@ public class ChatService(IChatRepository chatRepository,
             throw new ChatServiceException($"Failed to get chat by ID {chatId}.", e);
         }
     }
-
-    public Task<Chat> UpdateChatNameAsync(Guid chatId, ChatNameUpdate chatNameUpdate)
+    
+    public async Task<Chat> UpdateChatNameAsync(Guid chatId, Guid userId, ChatNameUpdate chatNameUpdate)
     {
         try
         {
-            return _chatRepository.UpdateChatNameAsync(chatId, chatNameUpdate);
+            await ThrowIfUserNotInChat(chatId, userId);
+            
+            if (string.IsNullOrWhiteSpace(chatNameUpdate.ChatName))
+            {
+                _logger.LogError("Failed to update name of chat {@ChatNameUpdate} for user with id {UserId}. " +
+                                 "Chat name cannot be empty.", chatNameUpdate, userId);
+                throw new EmptyChatNameServiceException($"Failed to update name of chat {chatNameUpdate} for user with id {userId}." +
+                                                        "Chat name cannot be empty.");
+            }
+            
+            return await _chatRepository.UpdateChatNameAsync(chatId, chatNameUpdate);
+        }
+        catch (Exception e) when (e is UserNotInChatServiceException
+                                  or EmptyChatNameServiceException)
+        {
+            throw;
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Failed to update name of chat with id {@Id}", chatId);
-            throw new ChatRepositoryException($"Failed to update name of chat with id {chatId}", e);
+            throw new ChatServiceException($"Failed to update name of chat with id {chatId}", e);
         }
     }
-
-    public async Task AddUserToChatAsync(Guid chatId, Guid userId)
+    
+    public async Task AddUserToChatAsync(Guid chatId, Guid userId, Guid userAddId)
     {
         try
         {
-            await ThrowIfUserNotExist(userId);
-            await _chatRepository.AddUserToChatAsync(chatId, userId);
+            await ThrowIfUserNotExist(userAddId);
+            await ThrowIfUserNotInChat(chatId, userId);
+            
+            await _chatRepository.AddUserToChatAsync(chatId, userAddId);
         }
-        catch (Exception e) when (e is UserNotFoundServiceException)
+        catch (Exception e) when (e is UserNotFoundServiceException 
+                                      or UserNotInChatServiceException)
         {
             throw;
         }
@@ -105,39 +144,39 @@ public class ChatService(IChatRepository chatRepository,
         }
     }
 
-    public Task RemoveUserFromChatAsync(Guid chatId, Guid userId)
+    public async Task RemoveUserFromChatAsync(Guid chatId, Guid userId)
     {
         try
         {
-            return _chatRepository.RemoveUserFromChatAsync(chatId, userId);
+            await _chatRepository.RemoveUserFromChatAsync(chatId, userId);
         }
-        catch (Exception e) when (e is UserNotFoundServiceException)
+        catch (Exception e) when (e is ChatNotFoundRepositoryException)
         {
-            throw;
-        }
+            throw new ChatNotFoundServiceException($"Failed to find user with id {userId}" +
+                                                   $" in chat with id {chatId}");
+        } 
         catch (Exception e)
         {
             _logger.LogError(e, "Failed to remove user with id {UserId} from chat with id {ChatId}.", userId, chatId);
             throw new ChatServiceException($"Failed to remove user with id {userId} from chat with id {chatId}.", e);
         }
     }
-
-
+    
     private async Task ThrowIfSomeUsersNotExist(List<Guid> userIds)
     {
-        var checkTasks = userIds.Select(id => _userRepository.IsUserExistByIdAsync(id)).ToList();
-        var results = await Task.WhenAll(checkTasks);
-
-        var missingUserIds = userIds
-            .Zip(results, (id, exists) => new { id, exists })
-            .Where(x => !x.exists)
-            .Select(x => x.id)
-            .ToList();
-
-        if (missingUserIds.Count != 0)
+        var notExistUsers = new List<Guid>();
+        foreach (var userId in userIds)
         {
-            _logger.LogError("Users with IDs {MissingUsers} not found.", missingUserIds);
-            throw new UserNotFoundServiceException($"Users with IDs {string.Join(", ", missingUserIds)} not found.");
+            if (!await _userRepository.IsUserExistByIdAsync(userId))
+            {
+                notExistUsers.Add(userId);
+            }
+        }
+
+        if (notExistUsers.Count > 0)
+        {
+            _logger.LogError("Users with IDs {UserIds} not found.", string.Join(", ", notExistUsers));
+            throw new UserNotFoundServiceException($"Users with IDs {string.Join(", ", notExistUsers)} not found.");
         }
     }
     
@@ -147,6 +186,15 @@ public class ChatService(IChatRepository chatRepository,
         {
             _logger.LogError("User with ID {UserId} not found.", userId);
             throw new UserNotFoundServiceException($"User with ID {userId} not found.");
+        }
+    }
+
+    private async Task ThrowIfUserNotInChat(Guid chatId, Guid userId)
+    {
+        if (!await _chatRepository.UserInChatAsync(chatId, userId))
+        {
+            _logger.LogError("User with id {UserId} is not in chat with id {ChatId}.", userId, chatId);
+            throw new UserNotInChatServiceException($"User with id {userId} is not in chat with id {chatId}.");
         }
     }
 }

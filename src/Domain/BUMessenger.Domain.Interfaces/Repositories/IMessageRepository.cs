@@ -21,4 +21,11 @@ public interface IMessageRepository
     /// <param name="filters">Фильтры пагинации</param>
     /// <returns>Коллекция сообщений</returns>
     Task<Paged<Message>> GetThreadMessagesAsync(Guid chatId, Guid parentMessageId, PageFilters filters);
+
+    /// <summary>
+    /// Создание сообщения
+    /// </summary>
+    /// <param name="messageCreate">Модель создания сообщения</param>
+    /// <returns>Созданное сообщение</returns>
+    Task<Message> CreateMessageAsync(MessageCreate messageCreate);
 }

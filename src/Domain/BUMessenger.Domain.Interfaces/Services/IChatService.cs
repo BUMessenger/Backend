@@ -8,9 +8,10 @@ public interface IChatService
     /// <summary>
     /// Создание чата
     /// </summary>
+    /// <param name="creatorId">Идентификатор пользователя, создающего чат</param>
     /// <param name="chatCreate">Модель создания чата</param>
     /// <returns>Созданный чат</returns>
-    Task<Chat> CreateChatAsync(ChatCreate chatCreate);
+    Task<Chat> CreateChatAsync(Guid creatorId, ChatCreate chatCreate);
     
     /// <summary>
     /// Получение чатов пользователя
@@ -24,24 +25,27 @@ public interface IChatService
     /// Получение чата по идентификатору
     /// </summary>
     /// <param name="chatId">Идентификатор чата</param>
+    /// <param name="userId">Идентификатор пользователя</param>
     /// <returns>Чат</returns>
-    Task<Chat> GetChatByIdAsync(Guid chatId);
-    
+    Task<Chat> GetChatByIdAsync(Guid chatId, Guid userId);
+
     /// <summary>
     /// Обновление названия чата
     /// </summary>
     /// <param name="chatId">Идентификатор чата</param>
+    /// <param name="userId">Идентификатор пользователя</param>
     /// <param name="chatNameUpdate">Модель обновления названия чата</param>
     /// <returns>Обновленный чат</returns>
-    Task<Chat> UpdateChatNameAsync(Guid chatId, ChatNameUpdate chatNameUpdate);
+    Task<Chat> UpdateChatNameAsync(Guid chatId, Guid userId, ChatNameUpdate chatNameUpdate);
     
     /// <summary>
     /// Добавление пользователя в чат
     /// </summary>
     /// <param name="chatId">Идентификатор чата</param>
-    /// <param name="userId">Идентификатор пользователя</param>
+    /// <param name="userId">Идентификатор добавляющего пользователя</param>
+    /// <param name="userAddId">Идентификатор добавляемого пользователя</param>
     /// <returns></returns>
-    Task AddUserToChatAsync(Guid chatId, Guid userId);
+    Task AddUserToChatAsync(Guid chatId, Guid userId, Guid userAddId);
     
     /// <summary>
     /// Удаление пользователя из чата

@@ -2,6 +2,7 @@ using BUMeesenger.Domain.Exceptions.Repositories.ChatExceptions;
 using BUMeesenger.Domain.Exceptions.Repositories.MessageException;
 using BUMessenger.DataAccess.Context;
 using BUMessenger.DataAccess.Models.Converters;
+using BUMessenger.DataAccess.Models.Models;
 using BUMessenger.Domain.Interfaces.Repositories;
 using BUMessenger.Domain.Models.Models;
 using BUMessenger.Domain.Models.Models.Messages;
@@ -18,11 +19,10 @@ public class MessageRepository(BUMessengerContext context,
     
      public async Task<Paged<Message>> GetMessagesAsync(Guid chatId, PageFilters filters)
     {
-        //todo возможно этот метод должен возвращать сообщения кроме тех что в тредах (уточнить у фронта)
         try
         {
             var query = _context.Messages
-                .Where(m => m.ChatId == chatId)
+                .Where(m => m.ChatId == chatId && m.ParentMessageId == null)
                 .AsNoTracking();
 
             var messages = await query
@@ -68,6 +68,29 @@ public class MessageRepository(BUMessengerContext context,
                 parentMessageId);
             throw new MessageRepositoryException($"Failed to get thread messages, " +
                                               $"created from message with id {parentMessageId}", e);
+        }
+    }
+    
+    public async Task<Message> CreateMessageAsync(MessageCreate messageCreate)
+    {
+        try
+        {
+            var messageDb = new MessageDb(id: Guid.NewGuid(),
+                chatId: messageCreate.ChatId,
+                creatorId: messageCreate.CreatorId,
+                parentMessageId: messageCreate.ParentMessageId,
+                sentAtUtc: messageCreate.SentAtUtc,
+                messageText: messageCreate.MessageText);
+            
+            await _context.Messages.AddAsync(messageDb);
+            await _context.SaveChangesAsync();
+
+            return messageDb.ToDomain();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to create message {@MessageCreate}", messageCreate);
+            throw new MessageRepositoryException($"Failed to create message {messageCreate}", e);
         }
     }
 }

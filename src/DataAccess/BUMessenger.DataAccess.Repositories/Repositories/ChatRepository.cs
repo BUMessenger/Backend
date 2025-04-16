@@ -18,7 +18,7 @@ public class ChatRepository(BUMessengerContext context,
     private readonly BUMessengerContext _context = context ?? throw new ArgumentNullException(nameof(context));
     private readonly ILogger<ChatRepository> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     
-    public async Task<Chat> CreateChatAsync(ChatCreate chatCreate)
+    public async Task<Chat> CreateChatAsync(Guid creatorId, ChatCreate chatCreate)
     {
         using var transaction = await _context.Database.BeginTransactionAsync();
         try
@@ -26,11 +26,13 @@ public class ChatRepository(BUMessengerContext context,
             var chatDb = new ChatDb(id: Guid.NewGuid(),
                 chatName: chatCreate.ChatName);
             
-            foreach (var userId in chatCreate.UsersIds)
-            {
-                var userChatInfo = new ChatUserInfoDb(Guid.NewGuid(), chatDb.Id, userId, null);
-                await _context.ChatUserInfos.AddAsync(userChatInfo);
-            }
+            var userChatInfos = chatCreate.UsersIds
+                .Select(userId => new ChatUserInfoDb(Guid.NewGuid(), chatDb.Id, userId, null))
+                .ToList();
+            
+            userChatInfos.Add(new ChatUserInfoDb(Guid.NewGuid(), chatDb.Id, creatorId, null));
+            
+            await _context.ChatUserInfos.AddRangeAsync(userChatInfos);
             
             await _context.Chats.AddAsync(chatDb);
             await _context.SaveChangesAsync();
@@ -45,8 +47,8 @@ public class ChatRepository(BUMessengerContext context,
         catch (Exception e)
         {
             await transaction.RollbackAsync();
-            _logger.LogError(e, "Failed to create chat {@ChatCreate}.", chatCreate);
-            throw new ChatRepositoryException($"Failed to create chat {chatCreate}.", e);
+            _logger.LogError(e, "Failed to create chat {@ChatCreate} for creator {CreatorId}.", chatCreate, creatorId);
+            throw new ChatRepositoryException($"Failed to create chat {chatCreate} for creator {creatorId}.", e);
         }
     }
 
@@ -54,40 +56,31 @@ public class ChatRepository(BUMessengerContext context,
     {
         try
         {
-            //todo тут загружаются все сообщения, это очень неэффективно
-            //todo еще раз проверить этот метод, он выглядит неэффективным
-            var query = _context.Chats
-                .Where(c => c.ChatUserInfos.Any(cui => cui.UserId == userId))
-                .Include(c => c.Users)
-                .Include(c => c.Messages)
-                .Include(c => c.ChatUserInfos)
-                .AsNoTracking();
-        
-            var chats = await query
-                .OrderByDescending(c => c.Messages.Max(m => m.SentAtUtc))
+            var query = _context.ChatUserInfos
+                .Include(cui => cui.Chat)
+                .Where(cui => cui.UserId == userId)
+                .Select(cui => new ChatSummaryDb
+                {
+                    Id = cui.Chat!.Id,
+                    ChatName = cui.Chat.ChatName,
+                    LastMessage = cui.Chat.Messages
+                        .OrderByDescending(m => m.SentAtUtc)
+                        .FirstOrDefault(),
+                    UnreadMessagesNumber = cui.Chat.Messages
+                        .Count(m => m.SentAtUtc > (cui.LastReadMessage != null
+                            ? cui.LastReadMessage.SentAtUtc
+                            : DateTime.MinValue))
+                });
+            
+            var chatsPreviews = await query
+                .OrderByDescending(c => c.LastMessage != null ? c.LastMessage.SentAtUtc : DateTime.MinValue)
                 .Skip(filters.Skip)
                 .Take(filters.Limit)
                 .ToListAsync();
-        
+            
             var count = await query.CountAsync();
-        
-            var items = chats.Select(chat =>
-            {
-                var lastMessage = chat.Messages.OrderByDescending(m => m.SentAtUtc).FirstOrDefault();
-                var userChatInfo = chat.ChatUserInfos.FirstOrDefault(cui => cui.UserId == userId);
-            
-                int unreadMessagesCount = 0;
-                if (userChatInfo != null)
-                {
-                    unreadMessagesCount = chat.Messages
-                        .Count(m => m.SentAtUtc > 
-                                    (userChatInfo.LastReadMessage?.SentAtUtc ?? DateTime.MinValue));
-                }
-            
-                return chat.ToSummaryDomain(lastMessage, unreadMessagesCount);
-            }).ToList();
-        
-            return new Paged<ChatSummary> { Items = items, Count = count };
+
+            return new Paged<ChatSummary> {Count = count, Items = chatsPreviews.ConvertAll(cs => cs.ToDomain())};
         }
         catch (Exception e)
         {
@@ -213,6 +206,23 @@ public class ChatRepository(BUMessengerContext context,
                 chatId);
             throw new ChatRepositoryException($"Failed to remove user with id {userId}" +
                                               $" from chat with id {chatId}");
+        }
+    }
+    
+    public async Task<bool> UserInChatAsync(Guid chatId, Guid userId)
+    {
+        try
+        {
+            return await _context.ChatUserInfos
+                .AnyAsync(cui => cui.ChatId == chatId && cui.UserId == userId);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to check if user with id {@UserId} is in chat with id {@ChatId}", 
+                userId, 
+                chatId);
+            throw new ChatRepositoryException($"Failed to check if user with id {userId}" +
+                                              $" is in chat with id {chatId}", e);
         }
     }
 }

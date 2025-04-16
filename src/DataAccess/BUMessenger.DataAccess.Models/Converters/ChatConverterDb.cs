@@ -23,7 +23,7 @@ public static class ChatConverterDb
     }
     
     [return: NotNullIfNotNull(nameof(chatDb))]
-    public static ChatSummary? ToSummaryDomain(this ChatDb? chatDb, MessageDb? lastMessage, int unreadMessagesCount)
+    public static ChatSummary? ToDomain(this ChatSummaryDb? chatDb)
     {
         if (chatDb is null)
             return null;
@@ -32,8 +32,8 @@ public static class ChatConverterDb
         {
             Id = chatDb.Id,
             ChatName = chatDb.ChatName,
-            LastMessage = lastMessage.ToDomain(),
-            UnreadMessagesCount = unreadMessagesCount
+            LastMessage = chatDb.LastMessage?.ToDomain(),
+            UnreadMessagesNumber = chatDb.UnreadMessagesNumber
         };
     }
 }

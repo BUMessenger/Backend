@@ -9,9 +9,10 @@ public interface IChatRepository
     /// <summary>
     /// Создание чата
     /// </summary>
+    /// <param name="creatorId">Идентификатор пользователя, создающего чат</param>
     /// <param name="chatCreate">Модель создания чата</param>
     /// <returns>Созданный чат</returns>
-    Task<Chat> CreateChatAsync(ChatCreate chatCreate);
+    Task<Chat> CreateChatAsync(Guid creatorId, ChatCreate chatCreate);
     
     /// <summary>
     /// Получение чатов пользователя
@@ -51,4 +52,12 @@ public interface IChatRepository
     /// <param name="userId">Идентификатор пользователя</param>
     /// <returns></returns>
     Task RemoveUserFromChatAsync(Guid chatId, Guid userId);
+
+    /// <summary>
+    /// Проверка, состоит ли пользователь в чате
+    /// </summary>
+    /// <param name ="chatId">Идентификатор чата</param>
+    /// <param name="userId">Идентификатор пользователя</param>
+    /// <returns>True, если пользователь состоит в чате, False - иначе</returns>
+    Task<bool> UserInChatAsync(Guid chatId, Guid userId);
 }

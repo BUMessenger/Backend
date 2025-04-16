@@ -11,6 +11,8 @@ public static class ServicesExtension
         services.AddTransient<IEmailService, EmailService>();
         services.AddTransient<IUserService, UserService>();
         services.AddTransient<IAuthTokenService, AuthTokenService>();
+        services.AddTransient<IChatService, ChatService>();
+        services.AddTransient<IMessageService, MessageService>();
 
         return services;
     }
